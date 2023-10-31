@@ -9,8 +9,10 @@ app.use(express.json())
 
 // Importing routes
 import genres from "./routes/genres.js";
+import publish from './routes/publish.js';
 
 // Setting where routes will be handled
+app.use('/publish', publish)
 app.use('/genres', genres)
 
 app.get("*", (req, res) => {
