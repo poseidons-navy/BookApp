@@ -26,4 +26,34 @@ export function getGenres() {
         return data;
     });
 }
+export function getGenreIDFromName(genre) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let { data, error } = yield supabaseClient
+                .from('Genres')
+                .select('id')
+                .eq('genre', genre);
+            // Throw an error if there was an issue getting data from supabase
+            if (error != null) {
+                console.log(error);
+                throw new MyError(ErrorMessages['NOT_GET_GENRE']);
+            }
+            // Throw an error if data is null
+            if (data == null) {
+                throw new MyError(ErrorMessages['NOT_GET_GENRE']);
+            }
+            // Return the genres
+            return data[0].id;
+        }
+        catch (err) {
+            console.log(err);
+            if (err instanceof MyError) {
+                throw err;
+            }
+            else {
+                throw new MyError(ErrorMessages['INTERNAL_SERVER_ERROR']);
+            }
+        }
+    });
+}
 //# sourceMappingURL=getGenres.js.map

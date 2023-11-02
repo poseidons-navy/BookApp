@@ -1,37 +1,50 @@
 import express from 'express';
 let router = express.Router();
-import multer from 'multer';
-let upload = multer({dest: 'uploads/'});
-import { readFile } from 'fs';
+import {upload} from "../middleware/fileUpload.js";
+import getPublisherIDFromAddress from '../model/Publishers/getIdFromAddress.js';
+import { createBook } from '../model/Books/createBook.js';
+import MyError from '../myError.js';
+import { ErrorMessages, SucessMessages } from '../constants.js';
 
 // Route for publishing a book
-router.post('/' ,upload.fields([{name: 'book_cover', maxCount: 1}, {name: 'book', maxCount: 1}]), async (req, res) => {
-    // Extracting title, description and genre from request body
-    let title: string = req.body.title;
-    let description: string = req.body.description;
-    let genre = Number.parseInt(req.body.genre);
-
-    // Read book cover and book
-    let book_cover_file_location: string = req.files["book_cover"][0].path;
-    let book_file_location: string = req.files["book"][0].path;
+router.post('/', upload.fields([{name: 'book_cover', maxCount: 1}, {name: 'book', maxCount: 1}]), async (req, res) => {
     try {
-        readFile(book_cover_file_location, (err, data) => {
-            if (err) throw err
-            console.log("Book Cover Data is: ")
-            let book_cover_data: Buffer = data
-            console.log(book_cover_data)
+        // Extracting title, description and genre from request body
+        let title: string = req.body.title;
+        let description: string = req.body.description;
+        let genre = Number.parseInt(req.body.genre);
+        let publisher_address = req.body.publisher_address;
 
-            readFile(book_file_location, (err, data) => {
-                if (err) throw err
-                console.log("Book Data is: ")
-                let book_data: Buffer = data
-                console.log(book_data)
+        let book_cover_location = req.files['book_cover'][0].location
+        let book_location = req.files['book'][0].location
 
-                res.send("Done")
-            })
-        })
+        console.log(book_cover_location, book_location)
+
+        // Get ID of publisher from address
+        let publisher_id = await getPublisherIDFromAddress(publisher_address);
+
+        // TODO: Create book in blockchain and get its address
+        let blockchain_address = "TO DO";
+
+        // Create book
+        await createBook(
+            title,
+            description,
+            genre,
+            book_cover_location,
+            book_location,
+            publisher_id,
+            blockchain_address
+        );
+        
+        res.status(201).json({message: SucessMessages['CREATED_BOOK']})
     } catch(err) {
-        console.log(`Error is ${err}`)
+        console.log(err)
+        if (err instanceof MyError) {
+            res.status(400).json({err: err.message})
+        } else {
+            res.status(500).json({err: ErrorMessages["INTERNAL_SERVER_ERROR"]})
+        }
     }
 })
 
