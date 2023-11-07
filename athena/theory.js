@@ -1,14 +1,9 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
-import crypto from "crypto"
- 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+/**@type {import('algosdk')} */
+const algosdk = require("algosdk");
+/**@type {import('crypto')} */
+const crypto = require('crypto');
 
-
-
-function generateEncryptionKey(password: string): Buffer {
+function generateEncryptionKey(password) {
   if (!password) {
     throw new Error("Password is required for key generation.");
   }
@@ -18,8 +13,7 @@ function generateEncryptionKey(password: string): Buffer {
   return key;
 }
 
-
-export function encryptPrivateKey(password: string, secretKey: Uint8Array): string {
+function encryptPrivateKey(password, secretKey) {
   if (!password) {
     throw new Error("Password is required for encryption.");
   }
@@ -35,17 +29,22 @@ export function encryptPrivateKey(password: string, secretKey: Uint8Array): stri
     cipher.final(),
   ]);
 
-  return iv.toString('hex') + ":" +encryptedPrivateKey.toString('hex');
+  return iv.toString("hex") + ":" + encryptedPrivateKey.toString('hex');
 }
 
-
-export function decryptPrivateKey(password: string, _encryptedPrivateKey: string): Uint8Array {
+/**
+ * 
+ * @param {string} password 
+ * @param {string} _encryptedPrivateKey 
+ * @returns 
+ */
+function decryptPrivateKey(password, _encryptedPrivateKey) {
   if (!password) {
-    throw new Error("Password is required for decryption.");
+    throw Error("Password is required for decryption.");
   }
 
   const key = generateEncryptionKey(password);
-  const [_iv, encryptedPrivateKey] = _encryptedPrivateKey.split(':')
+  const [_iv, encryptedPrivateKey] = _encryptedPrivateKey.split(":")
   const iv = Buffer.from(_iv, 'hex'); // Generate a random IV
 
   const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
@@ -57,4 +56,23 @@ export function decryptPrivateKey(password: string, _encryptedPrivateKey: string
   ]);
 
   return new Uint8Array(decryptedBuffer);
-}
+};
+
+module.exports = {
+  generateEncryptionKey,
+  encryptPrivateKey,
+  decryptPrivateKey,
+};
+
+
+
+(async ()=>{
+    const account = algosdk.generateAccount()
+
+    console.log("Default account", account)
+    
+    let encryptedKey = encryptPrivateKey("password", account.sk)
+    console.log("Encrypted::", encryptedKey)
+    let decrypted = decryptPrivateKey("password", encryptedKey)
+    console.log("Decrypted::", decrypted)
+})();
