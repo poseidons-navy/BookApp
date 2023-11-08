@@ -1,8 +1,9 @@
- ./sandbox goal account list
+                                                                                                                                                                                                    
+┌──(venv)─(patrickojiambo㉿PashKali)-[~/Documents/BookApp/onchain/sandbox]
+└─$ ./sandbox goal account list
 [offline]       HEKBPBB4S4RDB2KBLBYC6OOCHLMMZUKI3YPYQA6S3T7566BNLEC3CCRHBU      HEKBPBB4S4RDB2KBLBYC6OOCHLMMZUKI3YPYQA6S3T7566BNLEC3CCRHBU      4000000000000000 microAlgos
 [online]        Q2X2YAB4FC225H436G4PC25Q242D4XVG4WNWMMYQC4VXJX7RMUUNDG7MPM      Q2X2YAB4FC225H436G4PC25Q242D4XVG4WNWMMYQC4VXJX7RMUUNDG7MPM      4000000000000000 microAlgos
 [offline]       SXGCU6ZXQIRYWGJN3JTNCCVZWTYRS2XI2TWQUR4GU7ZNLUDKYKUBWBE2YA      SXGCU6ZXQIRYWGJN3JTNCCVZWTYRS2XI2TWQUR4GU7ZNLUDKYKUBWBE2YA      1000000000000000 microAlgos
-
 Example command to send between two accounts:
 ~$ ./sandbox goal clerk send -a 123456789 -f Q2X2YAB4FC225H436G4PC25Q242D4XVG4WNWMMYQC4VXJX7RMUUNDG7MPM -t SXGCU6ZXQIRYWGJN3JTNCCVZWTYRS2XI2TWQUR4GU7ZNLUDKYKUBWBE2YA
 
