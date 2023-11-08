@@ -1,7 +1,7 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import NavigationLink from "@/components/ui/navigation-link";
-import { BarChart2, CandlestickChart, KeyIcon, LibrarySquare, LogOut, PackageOpen, UserIcon, Users } from "lucide-react";
+import { BarChart2, CandlestickChart, KeyIcon, LibrarySquare, LogOut, PackageOpen, StoreIcon, UserIcon, Users } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { ReactNode } from "react";
 import DashboardTopBar from "./components/topbar";
@@ -41,6 +41,11 @@ export default function DashboardLayout(props: Props){
                         title={"My Store"}
                         link="/dashboard/store"
                         icon={PackageOpen} 
+                    />
+                    <NavigationLink
+                        title={"Market"}
+                        link="/market"
+                        icon={StoreIcon} 
                     />
                     
                 </div>
