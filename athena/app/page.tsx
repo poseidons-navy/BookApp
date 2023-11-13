@@ -6,10 +6,12 @@ import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import MyAlgoConnect from '@randlabs/myalgo-connect'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
 
   const [address, setAddress] = useState("");
+  const router = useRouter();
 
   const handleSignIn = async () => {
     signIn('github', {
@@ -22,6 +24,7 @@ export default function Home() {
     try {
       const accounts = await connector.connect();
       setAddress(accounts[0].address);
+      router.push('/dashboard');
     } catch(err) {
       console.log(err);
     }
