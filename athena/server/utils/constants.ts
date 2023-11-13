@@ -21,3 +21,15 @@ export const indexerClient = new algosdk.Indexer(config.indexerToken, config.ind
 export const myAlgoConnect = new MyAlgoConnect({
     timeout: 100000000,
 });
+
+export const minRound = 29556983;
+
+// https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0002.md
+export const bookAppNote = "build_a_bull:athena:v1"
+
+// Maximum local storage allocation, immutable
+export const numLocalInts = 0;
+export const numLocalBytes = 0;
+// Maximum global storage allocation, immutable
+export const numGlobalInts = 2; // Global variables stored as Int: count, sold
+export const numGlobalBytes = 3;
