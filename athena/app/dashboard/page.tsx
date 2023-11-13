@@ -1,3 +1,4 @@
+"use client"
 import CopyText from '@/components/copy-text'
 import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'
@@ -6,18 +7,20 @@ import { getServerAuthSession } from '@/server/auth'
 import { isNull } from 'lodash'
 import { HistoryIcon, Wallet } from 'lucide-react'
 import React from 'react'
+import { useContext } from 'react'
+import AppContext from '../app-context'
 
-async function DashboardPage() {
-    const session = await getServerAuthSession()
-    const user = session?.user
-    if(isNull(user?.walletAddress)) {
-        return <Redirect 
-            link='/setup-wallet'
-        />
-    }
+function DashboardPage() {
+    // const session = await getServerAuthSession()
+    // const user = session?.user
+    // if(isNull(user?.walletAddress)) {
+    //     return <Redirect 
+    //         link='/setup-wallet'
+    //     />
+    // }
+    const appContext = useContext(AppContext);
   return (
     <div className="flex flex-col items-center justify-centet w-full space-y-10 px-2 pb-[100px]">
-
         {/* Wallet Section */}
         <div className="flex flex-col w-full space-y-5 ring-1 ring-amber-100 rounded-md shadow-lg px-5 py-5 ">
                 <h2 className='text-xl font-semibold' >
@@ -37,7 +40,7 @@ async function DashboardPage() {
                     </div>
                     <CopyText
                         className='col-span-4'
-                        text={user?.walletAddress ?? ""}
+                        text={appContext.user_address}
                         title={"Account Address"}
                         icon='BookUser'
                         defaultView
