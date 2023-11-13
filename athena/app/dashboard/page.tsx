@@ -4,6 +4,7 @@ import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { getServerAuthSession } from '@/server/auth'
+import { getFavouritePublications } from '@/server/publication'
 import { isNull } from 'lodash'
 import { Heart, HistoryIcon, Wallet } from 'lucide-react'
 import React from 'react'
@@ -15,6 +16,14 @@ async function DashboardPage() {
         return <Redirect 
             link='/setup-wallet'
         />
+    }
+
+    try {
+        const p = getFavouritePublications()
+    }
+    catch(e)
+    {
+
     }
   return (
     <div className="flex flex-col items-center justify-centet w-full space-y-10 px-2 pb-[100px]">
