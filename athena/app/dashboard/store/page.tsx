@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { getCurrentUserPublications } from '@/server/publication';
 import { Publication, User } from '@prisma/client';
 import { PlusIcon } from 'lucide-react'
+
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
@@ -62,7 +63,6 @@ function StorePage() {
  
       <Link href="/dashboard/store/new" legacyBehavior >
         <div className="flex cursor-pointer shadow-sm hover:bg-slate-100 flex-col items-center justify-center w-full rounded-md h-[100px] ring-1 ring-amber-50 ">
-
             <PlusIcon />
             <span>
               Create a new publication
