@@ -27,9 +27,7 @@ return (
             </h2>
         </div>
         <div className="flex flex-col w-full gap-y-5">
-            <BookDetails/>
-            <BookDetails/>
-            <BookDetails/>
+          
         </div>
         </div>
     </div>
