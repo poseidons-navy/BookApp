@@ -1,12 +1,11 @@
 "use client"
-import BackButton from '@/components/back-button'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input, Textarea } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useToast } from '@/components/ui/use-toast'
 import { UploadDropzone } from '@/lib/uploadthing'
-import { createPublication } from '@/server/publication'
+import { createPublication, updatePublication } from '@/server/publication'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Publication } from '@prisma/client'
 import React, { useState } from 'react'
@@ -27,11 +26,26 @@ const formSchema = z.object({
 
 type Schema = z.infer<typeof formSchema>
 
-function CreateStore() {
+interface Props {
+    publication: Publication | null
+}
+
+function EditPublication(props: Props) {
+    const { publication } = props
     const [loading, setLoading] = useState(false)
     const { toast } = useToast()
     const form = useForm<Schema>({
-        resolver: zodResolver(formSchema)
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            cover: publication?.cover ?? undefined,
+            description: publication?.description ?? undefined,
+            file_url: publication?.file_url ?? undefined,
+            genre: publication?.genre ?? undefined,
+            name: publication?.name ?? undefined,
+            pages: publication?.pages,
+            price: publication?.price,
+            status: publication?.status
+        }
     })
     
 
@@ -39,15 +53,18 @@ function CreateStore() {
         console.log("Values", values)
         setLoading(true)
         try {
-            const publication = await  createPublication({
+            if(!publication?.id) {
+                return 
+            }
+            const p = await  updatePublication(publication?.id,{
                 ...values
             })
 
-            window.location.href = `/dashboard/publications/${publication.id}`
+            window.location.href = `/dashboard/store`
 
             toast({
                 title: "🎉 Success",
-                description: "Publication successfully created",
+                description: "Publication successfully updated",
             })
         }
         catch(e)
@@ -65,12 +82,9 @@ function CreateStore() {
 
   return (
     <div className="flex flex-col w-full h-full items-center  justify-center ">
-        <div className="flex flex-row items-center justify-start w-full">
-            <BackButton/>
-        </div>
         <div className="flex flex-col w-4/5  h-full items-center justify-center px-5 ">
             <h3 className='text-xl font-semibold' >
-                Create your publication
+                Edit your publication
             </h3>
             <Form {...form} > 
                 <form onSubmit={form.handleSubmit(onSubmit)} className='w-full h-full space-y-4' >
@@ -299,4 +313,4 @@ function CreateStore() {
   )
 }
 
-export default CreateStore
+export default EditPublication

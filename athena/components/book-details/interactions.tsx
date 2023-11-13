@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { getPublicationSaveEvent, removePublicationSaveEvent, savePublication } from '@/server/publication'
 import { Publication, User, UserEvent } from '@prisma/client'
+import clsx from 'clsx'
 import { isNull } from 'lodash'
 import { BookOpenText, HeartIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -11,8 +12,8 @@ import React, { useEffect, useState } from 'react'
 
 
 
-function Interactions(props: {publication: Partial<Publication & { creator: User | null }> | null}) {
-    const { publication } = props
+function Interactions(props: {publication: Partial<Publication & { creator: User | null }> | null, className?: string}) {
+    const { publication, className } = props
     const [saveEvent, setSaveEvent] = useState<UserEvent|null>(null)
     const [loading, setLoading] = useState(false)
     const [eventLoading, setEventLoading ] = useState(false)
@@ -95,7 +96,7 @@ function Interactions(props: {publication: Partial<Publication & { creator: User
 
 
   return (
-    <div className="flex flex-row items-center col-span-2 gap-x-5">
+    <div className={clsx("flex flex-row items-center gap-x-5", className)}>
         <Button onClick={()=>{
             // saveEvent ? handleLike : removeLike
             if(isNull(saveEvent)){

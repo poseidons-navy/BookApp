@@ -1,5 +1,5 @@
 "use server"
-import { Publication } from "@prisma/client";
+import { Publication, PublicationStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getServerAuthSession } from "./auth";
 
@@ -125,8 +125,7 @@ export async function getFavouritePublications(){
     return publications
 }
 
-export async function getCurrentUserPublications(search?: string){
-
+export async function getCurrentUserPublications(search?: string, status?: PublicationStatus){
     const session = await getServerAuthSession()
     const user = session?.user
 
@@ -134,9 +133,10 @@ export async function getCurrentUserPublications(search?: string){
         where: {
             creator_id: user?.id,
             name: (search && search?.length > 0) ? {
-                contains: search,
+                contains: search?.length == 0 ? undefined : search,
                 mode: 'insensitive'
-            } : undefined
+            } : undefined,
+            status
         },
         include: {
             creator: true
@@ -144,4 +144,66 @@ export async function getCurrentUserPublications(search?: string){
     })
 
     return publications
+}
+export async function getMarketPublications(search?: string){
+    const session = await getServerAuthSession()
+    const user = session?.user
+
+    const publications = await prisma.publication.findMany({
+        where: {
+            creator_id: user?.id,
+            name: (search && search?.length > 0) ? {
+                contains: search?.length == 0 ? undefined : search,
+                mode: 'insensitive'
+            } : undefined,
+            status: "published"
+        },
+        include: {
+            creator: true
+        }
+    })
+
+    return publications
+}
+
+
+export async function getPurchasedBooks(search?: string, status?: PublicationStatus){
+    const session = await getServerAuthSession()
+    const user = session?.user
+
+    const publications = await prisma.publication.findMany({
+        where: {
+            purchases: {
+                some: {
+                    user_id: user?.id,
+                }
+            },
+            name:(search && search?.length > 0) ? {
+                contains: search?.length == 0 ? undefined : search,
+                mode: 'insensitive'
+            } : undefined,
+            status
+        },
+        include: {
+            creator: true
+        }
+    })
+
+
+    return publications
+}
+
+
+export async function updatePublication(id: string, data: Partial<Publication>){
+
+    const publication = await prisma.publication.update({
+        where: {
+            id
+        },
+        data: {
+            ...data
+        }
+    })
+
+    return publication
 }

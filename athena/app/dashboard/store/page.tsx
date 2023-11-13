@@ -2,20 +2,24 @@
 import BookDetails from '@/components/book-details'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getCurrentUserPublications } from '@/server/publication';
 import { Publication, User } from '@prisma/client';
-import { PlusIcon } from 'lucide-react'
+import { PlusIcon, Search } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
 function StorePage() {
+  const [search, setSearch] = useState<string>()
+  const [searchLoading, setSearchLoading] = useState(false)
+
   const [{ data, loading }, setPublications] = useState<{ data: Array<Publication & { creator: User | null }>, loading: boolean }>({
     data: [],
     loading: false
   })
 
 
-  const loadStoreData = async () => {
+  const loadStoreData = async (status?: any) => {
     setPublications((prev)=>{
       return {
         ...prev,
@@ -23,7 +27,7 @@ function StorePage() {
       }
     })
     try {
-      const publications = await getCurrentUserPublications()
+      const publications = await getCurrentUserPublications(search, status == "all" ? undefined : status)
 
       setPublications((prev)=>{
         return {
@@ -48,6 +52,16 @@ function StorePage() {
   }
 
 
+  const handleChangeStatus = async (value: string) => {
+    await loadStoreData(value)
+  }
+
+  const handleSearch = async () => {
+    setSearchLoading(true)
+    await loadStoreData()
+    setSearchLoading(false)
+  }
+
   useEffect(()=>{
     (async ()=>{
       await loadStoreData()
@@ -71,21 +85,36 @@ function StorePage() {
       </Link>
 
       <div className="flex flex-row w-full items-center justify-between gap-x-4">
-        <Input placeholder='Search for your publicaions by title' />
+        <div className="flex flex-row items-center justify-center gap-x-3 w-4/5 ">
+          <Input onChange={(e)=> setSearch(e.target.value)} placeholder='Search for your publicaions by title' />
+          <Button onClick={handleSearch} variant={'outline'} isLoading={searchLoading} >
+            <Search/>
+          </Button>
+        </div>
         <div className="flex flex-row items-center justify-center gap-x-3">
-          <Button>
-            All
-          </Button>
-          <Button variant={'outline'} >
-            Drafts
-          </Button>
-          <Button variant={'outline'} >
-            Published
-          </Button>
+          <Select onValueChange={(value)=>{
+            console.log("Value", value)
+             handleChangeStatus(value)
+          }} >
+            <SelectTrigger>
+              <SelectValue placeholder="Choose a status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value='draft' >
+                Draft
+              </SelectItem>
+              <SelectItem value='published' >
+                Published
+              </SelectItem>
+              <SelectItem value='archived' >
+                Archived
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
-      <div className="flex flex-col w-full items-center gap-y-5">
+      {!loading && <div className="flex flex-col w-full items-center gap-y-5">
         {
           data?.map((publication, i)=> {
             return  (
@@ -96,14 +125,15 @@ function StorePage() {
             )
           })
         }
-        {/* <BookDetails/>
-        <BookDetails/>
-        <BookDetails/>
-        <BookDetails/>
-        <BookDetails/>
-        <BookDetails/>
-        <BookDetails/> */}
-      </div>
+      </div>}
+      {
+        loading && <div className="flex flex-col w-full items-center gap-y-5">
+          <div className="w-full rounded-md bg-slate-100 animate-pulse h-[300px] shadow-sm"></div>
+          <div className="w-full rounded-md bg-slate-100 animate-pulse h-[300px] shadow-sm"></div>
+          <div className="w-full rounded-md bg-slate-100 animate-pulse h-[300px] shadow-sm"></div>
+          <div className="w-full rounded-md bg-slate-100 animate-pulse h-[300px] shadow-sm"></div>
+        </div>
+      }
     </div>
   )
 }
