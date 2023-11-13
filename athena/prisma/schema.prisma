@@ -34,7 +34,7 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -53,7 +53,7 @@ model User {
   publications        Publication[]
   purchases           Purchase[]
   events              UserEvent[]
-  comments             Comment[]
+  comments            Comment[]
 }
 
 model VerificationToken {
@@ -74,7 +74,7 @@ model Publication {
   id          String            @id @default(cuid())
   name        String?
   description String?
-  creator     User              @relation(references: [id], fields: [creator_id])
+  creator     User?             @relation(references: [id], fields: [creator_id])
   creator_id  String
   price       Float             @default(0)
   genre       String?
@@ -86,16 +86,16 @@ model Publication {
   purchases   Purchase[]
   events      UserEvent[]
   created_at  DateTime          @default(now())
-  comments     Comment[]
+  comments    Comment[]
 }
 
 model Purchase {
-  id             String      @id @default(cuid())
+  id             String       @id @default(cuid())
   user_id        String
-  user           User        @relation(references: [id], fields: [user_id])
+  user           User?        @relation(references: [id], fields: [user_id])
   publication_id String
-  publication    Publication @relation(references: [id], fields: [publication_id])
-  created_at     DateTime    @default(now())
+  publication    Publication? @relation(references: [id], fields: [publication_id])
+  created_at     DateTime     @default(now())
 }
 
 enum UserEventType {
@@ -107,17 +107,17 @@ model UserEvent {
   id             String        @id @default(cuid())
   type           UserEventType
   publication_id String
-  publication    Publication   @relation(references: [id], fields: [publication_id])
+  publication    Publication?  @relation(references: [id], fields: [publication_id])
   user_id        String
-  user           User          @relation(references: [id], fields: [user_id])
+  user           User?         @relation(references: [id], fields: [user_id])
   created_at     DateTime      @default(now())
 }
 
 model Comment {
-  id             String      @id @default(cuid())
+  id             String       @id @default(cuid())
   content        String
   user_id        String
-  user           User        @relation(references: [id], fields: [user_id])
+  user           User?        @relation(references: [id], fields: [user_id])
   publication_id String
-  publication    Publication @relation(references: [id], fields: [publication_id])
+  publication    Publication? @relation(references: [id], fields: [publication_id])
 }
