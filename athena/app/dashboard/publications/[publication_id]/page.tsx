@@ -1,4 +1,4 @@
-import { PageProps } from '@/.next/types/app/layout'
+import { PageProps } from '@/.next/types/app/page'
 import BookDetails from '@/components/book-details'
 import { Button } from '@/components/ui/button'
 import { getServerAuthSession } from '@/server/auth'

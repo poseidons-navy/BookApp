@@ -1,4 +1,4 @@
-import { PageProps } from '@/.next/types/app/layout'
+import { PageProps } from '@/.next/types/app/page'
 import { Publication } from '@prisma/client'
 import React from 'react'
 import { prisma } from "@/lib/prisma"
