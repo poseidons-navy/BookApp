@@ -1,18 +1,39 @@
+"use client"
 import BookDetails from '@/components/book-details'
 import Redirect from '@/components/redirect'
 import { getServerAuthSession } from '@/server/auth'
 import { isNull } from 'lodash'
 import { Heart } from 'lucide-react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 
-async function FavouritesPage() {
-    const session = await getServerAuthSession()
-    const user = session?.user
-    if(isNull(user?.walletAddress)) {
-        return <Redirect 
-            link='/setup-wallet'
-        />
+function FavouritesPage() {
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const session = await getServerAuthSession();
+            const user = session?.user
+            if(isNull(user?.walletAddress)) {
+                return <Redirect 
+                    link='/setup-wallet'
+                />
+            }
+        }
+        fetchData();
+    }, []);
+    
+    
+    const [favorites, setFavorites] = useState([]);
+
+    //function to add/remove books from favorites
+    const handleToggleFavorite = (bookId) => {
+        if (favorites.includes(bookId)) {
+            //remove from favorites
+            setFavorites(favorites.filter((id) => id !==bookId));
+        }else{
+            //add to favorites
+            setFavorites([...favorites, bookId]);
+        }
     }
 
 return (
@@ -27,9 +48,9 @@ return (
             </h2>
         </div>
         <div className="flex flex-col w-full gap-y-5">
-            <BookDetails/>
-            <BookDetails/>
-            <BookDetails/>
+            <BookDetails onToggleFavorite={handleToggleFavorite} bookId=''/>
+            <BookDetails onToggleFavorite={handleToggleFavorite} bookId=''/>
+            <BookDetails onToggleFavorite={handleToggleFavorite} bookId=''/>
         </div>
         </div>
     </div>
@@ -37,3 +58,4 @@ return (
 }
 
 export default FavouritesPage;
+//books section

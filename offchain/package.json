@@ -2,17 +2,18 @@
   "name": "offchain",
   "version": "1.0.0",
   "description": "",
-  "main": "built/app.js",
+  "main": "app.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc -w",
+    "build": "nodemon server.js",
     "start": "npx nodemon node built/app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cors": "^2.8.16",
     "@types/express": "^4.17.20",
     "@types/node": "^20.8.7",
     "nodemon": "^3.0.1",
@@ -20,9 +21,12 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.440.0",
+    "@prisma/client": "^5.5.2",
     "@supabase/supabase-js": "^2.38.2",
     "@types/multer": "^1.4.9",
     "@types/multer-s3": "^3.0.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "multer": "^1.4.5-lts.1",

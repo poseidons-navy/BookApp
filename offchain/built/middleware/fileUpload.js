@@ -1,4 +1,4 @@
-import { S3Client } from "@aws-sdk/client-s3";
+/*import { S3Client } from "@aws-sdk/client-s3";
 import dotenv from 'dotenv';
 import multer from "multer";
 import multers3 from 'multer-s3';
@@ -28,4 +28,4 @@ const s3Storage = multers3({
 export const upload = multer({
     storage: s3Storage
 });
-//# sourceMappingURL=fileUpload.js.map
+//# sourceMappingURL=fileUpload.js.map*/

@@ -9,11 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { ErrorMessages } from "../../constants.js";
 import MyError from "../../myError.js";
-import { supabaseClient } from "../../constants.js";
+import { PrismaClient } from "@prisma/client";
 export function createGenre(name) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const { error } = yield supabaseClient.from('Genres').insert({ genre: name });
+            const { error } = yield PrismaClient.from('Genres').insert({ genre: name });
             // Throw an error if error is not null
             if (error != null) {
                 console.log(error);

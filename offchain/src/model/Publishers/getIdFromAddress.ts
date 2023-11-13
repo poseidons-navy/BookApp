@@ -1,27 +1,28 @@
+// import necessary Prisma types
+import { PrismaClient } from '@prisma/client';
 import { ErrorMessages } from "../../constants.js";
 import MyError from "../../myError.js";
-import { supabaseClient } from "../../constants.js";
+// create an instance of PrismaClient
+const prisma = new PrismaClient();
 
+// Function to get Publisher ID from address
 export default async function getPublisherIDFromAddress(address: string): Promise<number> {
     try {
-        // Get Publisher ID
-        const {data, error} = await supabaseClient
-            .rpc('get_publisher_id', {address: address});
+        // Use Prisma to find Publisher by address
+        const publisher = await prisma.publisher.findUnique({
+            where: { address },
+            select: { id: true },
+        });
 
-        // Throw an error if error is not null
-        if (error != null) {
-            console.log(error);
-            throw new MyError(ErrorMessages['NOT_GET_USER_ID']);
+        // Throw an error if the publisher is not found
+        if (!publisher) {
+            throw new MyError(ErrorMessages['USER_NOT_EXIST']);
         }
 
-        if (data == null) {
-            throw new MyError(ErrorMessages['USER_NOT_EXIST'])
-        }
+        let publisher_id = Number.parseInt(address);
 
-        let publisher_id = Number.parseInt(data)
-        return publisher_id;
-        
-    } catch(err) {
+        return publisher.id;
+    } catch (err) {
         console.log(err);
         if (err instanceof MyError) {
             throw err;
@@ -30,10 +31,3 @@ export default async function getPublisherIDFromAddress(address: string): Promis
         }
     }
 }
-// Testing if function works
-// async function main() {
-//     let id = await getPublisherIDFromAddress("1")
-//     console.log(`Publisher is: ${id}`);
-// }
-
-// main();

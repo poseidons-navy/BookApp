@@ -1,7 +1,7 @@
 import express from "express";
 let router = express.Router();
 import { ErrorMessages } from "../constants.js";
-import { SucessMessages } from "../constants.js";
+import { SuccessMessages } from "../constants.js";
 import { getGenres } from "../model/Genres/getGenres.js";
 import MyError from "../myError.js";
 import { createGenre } from "../model/Genres/createGenre.js";
@@ -23,18 +23,18 @@ router.get("/", async (req, res) => {
 // Route for creating genres
 router.post("/",async (req, res) => {
     try {
-        let {
-            name
-        } = req.body;
+        let { name } = req.body;
         console.log(name);
-        await createGenre(name!)
-        return res.status(201).json({msg: SucessMessages['CREATED_GENRE']});
-    } catch(err) {
+        await createGenre(name);
+        return res.status(201).json({ msg: SuccessMessages["CREATED_GENRE"] });
+    } catch (err) {
         console.log(err);
         if (err instanceof MyError) {
-            return res.status(400).json({msg: err.message})
+            return res.status(400).json({ msg: err.message });
         } else {
-            return res.status(500).json({msg: ErrorMessages['INTERNAL_SERVER_ERROR']})
+            return res
+                .status(500)
+                .json({ msg: ErrorMessages["INTERNAL_SERVER_ERROR"] });
         }
     }
 })

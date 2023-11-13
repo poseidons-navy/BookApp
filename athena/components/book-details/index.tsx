@@ -1,9 +1,23 @@
+"use client"
 import Image from 'next/image'
-import React from 'react'
+import React, {useState} from 'react'
 import { Button } from '../ui/button'
 import { BookOpenText, FileEdit, Heart, MessageCircle } from 'lucide-react'
 
-function BookDetails() {
+//ADDED PROPS
+interface BookDetailsProps {
+    onToggleFavorite: (bookId: string) => void;
+    bookId: string;
+  }
+  function BookDetails({ onToggleFavorite, bookId }: BookDetailsProps) {
+    const [isFavorite, setIsFavorite] = useState(false);
+
+    const handleToggleFavorite = () => {
+        setIsFavorite((prev) => !prev);
+        //Call the parent comps function to handle favorites
+        onToggleFavorite(bookId);
+    };
+
   return (
     <div className="grid grid-cols-5 w-full px-5 py-4 rounded-sm ring-1 ring-amber-100 shadow-md gap-x-4 gap-y-4">
 
@@ -40,8 +54,9 @@ function BookDetails() {
         {/* Action Buttons */}
         <div className=""></div>
         
-        <Button variant={'outline'} >
-            <Heart/>
+        {/*Toggle the favorite button*/}
+        <Button variant={'outline'} onClick={handleToggleFavorite} >
+            {isFavorite ? <Heart fill='red'/> : <Heart/>}
         </Button>
 
         <Button variant={'outline'} >

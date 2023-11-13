@@ -1,5 +1,5 @@
 import { NextAuthOptions, getServerSession } from "next-auth"
-import { PrismaAdapter } from  "@next-auth/prisma-adapter"
+import { PrismaAdapter } from  /*"@next-auth/prisma-adapter"*/ "../node_modules/@next-auth/prisma-adapter/dist"
 import { prisma } from "@/lib/prisma"
 import Github, { GithubProfile } from "next-auth/providers/github"
 

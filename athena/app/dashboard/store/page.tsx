@@ -37,7 +37,7 @@ function StorePage() {
       </div>
 
       <div className="flex flex-col w-full items-center gap-y-5">
-        <BookDetails/>
+        <BookDetails />
         <BookDetails/>
         <BookDetails/>
         <BookDetails/>

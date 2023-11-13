@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import express from "express";
 let router = express.Router();
 import { ErrorMessages } from "../constants.js";
-import { SucessMessages } from "../constants.js";
+import { SuccessMessages } from "../constants.js";
 import { getGenres } from "../model/Genres/getGenres.js";
 import MyError from "../myError.js";
 import { createGenre } from "../model/Genres/createGenre.js";
@@ -35,7 +35,7 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         let { name } = req.body;
         console.log(name);
         yield createGenre(name);
-        return res.status(201).json({ msg: SucessMessages['CREATED_GENRE'] });
+        return res.status(201).json({ msg: SuccessMessages["CREATED_GENRE"] });
     }
     catch (err) {
         console.log(err);
@@ -43,7 +43,9 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(400).json({ msg: err.message });
         }
         else {
-            return res.status(500).json({ msg: ErrorMessages['INTERNAL_SERVER_ERROR'] });
+            return res
+                .status(500)
+                .json({ msg: ErrorMessages["INTERNAL_SERVER_ERROR"] });
         }
     }
 }));

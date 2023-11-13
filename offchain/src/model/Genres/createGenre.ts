@@ -1,10 +1,11 @@
 import { ErrorMessages } from "../../constants.js";
 import MyError from "../../myError.js";
-import { supabaseClient } from "../../constants.js";
+import { prisma } from "../../constants.js";
+import { PrismaClient } from "@prisma/client";
 
 export async function createGenre(name: string): Promise<void> {
     try {
-        const {error} = await supabaseClient.from('Genres').insert({genre: name});
+        const {error} = await PrismaClient.from('Genres').insert({genre: name});
 
         // Throw an error if error is not null
         if (error != null) {

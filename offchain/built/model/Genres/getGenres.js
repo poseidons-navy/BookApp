@@ -7,52 +7,51 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { supabaseClient } from "../../constants.js";
+// Import PrismaClient
+import { PrismaClient } from '@prisma/client';
 import { ErrorMessages } from "../../constants.js";
 import MyError from "../../myError.js";
+const prisma = new PrismaClient();
 // A function to get genres from the database
 export function getGenres() {
     return __awaiter(this, void 0, void 0, function* () {
-        let { data, error } = yield supabaseClient.from('Genres').select('id, genre');
-        // Throw an error if there was an issue getting data from supabase
-        if (error != null) {
-            throw new MyError(ErrorMessages['NOT_GET_GENRES']);
+        try {
+            // Use Prisma to get all genres
+            const genres = yield prisma.genre.findMany({
+                select: {
+                    id: true,
+                    genre: true,
+                },
+            });
+            return genres;
         }
-        // Throw an error if data is null
-        if (data == null) {
-            throw new MyError(ErrorMessages['NOT_GET_GENRES']);
+        catch (error) {
+            console.error(error);
+            throw new MyError(ErrorMessages['INTERNAL_SERVER_ERROR']);
         }
-        // Return the genres
-        return data;
     });
 }
 export function getGenreIDFromName(genre) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let { data, error } = yield supabaseClient
-                .from('Genres')
-                .select('id')
-                .eq('genre', genre);
-            // Throw an error if there was an issue getting data from supabase
-            if (error != null) {
-                console.log(error);
+            // Use Prisma to find the genre by name and select its id
+            const genreRecord = yield prisma.genre.findUnique({
+                where: {
+                    genre,
+                },
+                select: {
+                    id: true,
+                },
+            });
+            // Throw an error if genreRecord is null
+            if (!genreRecord) {
                 throw new MyError(ErrorMessages['NOT_GET_GENRE']);
             }
-            // Throw an error if data is null
-            if (data == null) {
-                throw new MyError(ErrorMessages['NOT_GET_GENRE']);
-            }
-            // Return the genres
-            return data[0].id;
+            return genreRecord.id;
         }
-        catch (err) {
-            console.log(err);
-            if (err instanceof MyError) {
-                throw err;
-            }
-            else {
-                throw new MyError(ErrorMessages['INTERNAL_SERVER_ERROR']);
-            }
+        catch (error) {
+            console.error(error);
+            throw new MyError(ErrorMessages['INTERNAL_SERVER_ERROR']);
         }
     });
 }
