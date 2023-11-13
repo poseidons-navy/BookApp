@@ -4,7 +4,8 @@ import clsx from 'clsx'
 import { LogOut } from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
 import React, { useEffect, useState, useContext } from 'react'
-import AppContext from '@/app/app-context'
+import {AppContext} from '@/app/app-context'
+import { truncateString } from '@/app/helpers/truncate_string'
 
 function DashboardTopBar() {
   const session = useSession()

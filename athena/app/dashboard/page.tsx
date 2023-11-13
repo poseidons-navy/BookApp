@@ -8,7 +8,7 @@ import { isNull } from 'lodash'
 import { HistoryIcon, Wallet } from 'lucide-react'
 import React from 'react'
 import { useContext } from 'react'
-import AppContext from '../app-context'
+import {AppContext} from '../app-context'
 
 function DashboardPage() {
     // const session = await getServerAuthSession()
