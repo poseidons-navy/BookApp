@@ -5,9 +5,10 @@ import { ArrowUp, GithubIcon, Wallet, XIcon } from "lucide-react"
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import MyAlgoConnect from '@randlabs/myalgo-connect'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {AppContext} from './app-context'
+import { LocalStorageKeys } from './helpers/local_storage_keys'
+// import {AppContext} from './app-context'
 
 export default function Home() {
   const router = useRouter();
@@ -18,14 +19,16 @@ export default function Home() {
     })
   }
 
-  let appContext = useContext(AppContext)
+  // let appContext = useContext(AppContext)
 
   async function connectWallet() {
     const connector = new MyAlgoConnect;
     try {
       const accounts = await connector.connect();
-      appContext.set_user_address(accounts[0].address);
-      console.log(`Address is ${accounts[0].address}`);
+      // appContext.set_user_address(accounts[0].address);
+      const address = accounts[0].address;
+      console.log(`Address is ${address}`);
+      localStorage.setItem(LocalStorageKeys.USER_ADDRESS, address);
       router.push('/dashboard');
     } catch (err) {
       console.log(err);

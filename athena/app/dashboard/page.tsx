@@ -10,11 +10,12 @@ import { Publication, User } from '@prisma/client'
 import { isNull } from 'lodash'
 import { Heart, HistoryIcon, Wallet } from 'lucide-react'
 import React from 'react'
-import { useContext } from 'react'
-import {AppContext} from '../app-context'
+import { LocalStorageKeys } from '../helpers/local_storage_keys'
+// import { useContext } from 'react'
+// import {AppContext} from '../app-context'
 
 function DashboardPage() {
-    const appContext = useContext(AppContext);
+    // const appContext = useContext(AppContext);
     // const session = await getServerAuthSession()
     // const user = session?.user
     // let publications: Array<Publication & { creator: User | null } | null> = []
@@ -31,6 +32,8 @@ function DashboardPage() {
     // {
 
     // }
+    const address = localStorage.getItem(LocalStorageKeys.USER_ADDRESS);
+
   return (
     <div className="flex flex-col items-center justify-centet w-full space-y-10 px-2 pb-[100px]">
         {/* Wallet Section */}
@@ -52,7 +55,7 @@ function DashboardPage() {
                     </div>
                     <CopyText
                         className='col-span-4'
-                        text={appContext.user_address}
+                        text={address ?? ""}
                         title={"Account Address"}
                         icon='BookUser'
                         defaultView
