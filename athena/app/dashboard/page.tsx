@@ -1,4 +1,3 @@
-import BookDetails from '@/components/book-details'
 import CopyText from '@/components/copy-text'
 import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'
@@ -9,7 +8,7 @@ import { Publication, User } from '@prisma/client'
 import { isNull } from 'lodash'
 import { HistoryIcon, Wallet } from 'lucide-react'
 import React from 'react'
-import BookDetails from '@/components/book-details'
+//import BookDetails from '@/components/book-details'
 
 async function DashboardPage() {
     const session = await getServerAuthSession()
