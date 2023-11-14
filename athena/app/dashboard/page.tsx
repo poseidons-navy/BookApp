@@ -1,3 +1,5 @@
+"use client"
+import BookDetails from '@/components/book-details'
 import CopyText from '@/components/copy-text'
 import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'
@@ -6,32 +8,35 @@ import { getServerAuthSession } from '@/server/auth'
 import { getFavouritePublications } from '@/server/publication'
 import { Publication, User } from '@prisma/client'
 import { isNull } from 'lodash'
-import { HistoryIcon, Wallet } from 'lucide-react'
+import { HistoryIcon, Wallet, Heart } from 'lucide-react'
 import React from 'react'
-//import BookDetails from '@/components/book-details'
 
-async function DashboardPage() {
-    const session = await getServerAuthSession()
-    const user = session?.user
-    let publications: Array<Publication & { creator: User | null } | null> = []
-    if(isNull(user?.walletAddress)) {
-        return <Redirect 
-            link='/setup-wallet'
-        />
-    }
+import { LocalStorageKeys } from '../helpers/local_storage_keys'
+// import { useContext } from 'react'
+// import {AppContext} from '../app-context'
 
-    try {
-        publications = await getFavouritePublications()
-    }
-    catch(e)
-    {
+function DashboardPage() {
+    // const appContext = useContext(AppContext);
+    // const session = await getServerAuthSession()
+    // const user = session?.user
+    // let publications: Array<Publication & { creator: User | null } | null> = []
+    // if(isNull(user?.walletAddress)) {
+    //     return <Redirect 
+    //         link='/setup-wallet'
+    //     />
+    // }
 
-    }
+    // try {
+    //     publications = await getFavouritePublications()
+    // }
+    // catch(e)
+    // {
 
+    // }
+    const address = localStorage.getItem(LocalStorageKeys.USER_ADDRESS);
 
   return (
     <div className="flex flex-col items-center justify-centet w-full space-y-10 px-2 pb-[100px]">
-
         {/* Wallet Section */}
         <div className="flex flex-col w-full space-y-5 ring-1 ring-amber-100 rounded-md shadow-lg px-5 py-5 ">
                 <h2 className='text-xl font-semibold' >
@@ -51,7 +56,7 @@ async function DashboardPage() {
                     </div>
                     <CopyText
                         className='col-span-4'
-                        text={user?.walletAddress ?? ""}
+                        text={address ?? ""}
                         title={"Account Address"}
                         icon='BookUser'
                         defaultView
@@ -96,6 +101,8 @@ async function DashboardPage() {
             </Table>
 
         </div>
+
+        
 
         
     </div>

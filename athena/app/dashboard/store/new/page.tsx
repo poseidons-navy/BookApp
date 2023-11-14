@@ -134,6 +134,7 @@ function CreateStore() {
                                                 }
                                             }}
                                             onUploadError={(e)=>{
+                                                console.log(e);
                                                 toast({
                                                     variant: "destructive",
                                                     title: "!Oops",
