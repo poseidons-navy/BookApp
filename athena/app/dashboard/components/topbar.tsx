@@ -30,7 +30,7 @@ function DashboardTopBar() {
                 @{ session?.data?.user?.username }
             </span>
         </div>
-        <div className="flex flex-row items-center justify-center cursor-pointer hover:bg-neutral-400 group p-2 rounded-full">
+        <div className="flex flex-row items-center justify-center cursor-pointer hover:bg-neutral-400 group p-2 rounded-full gap-x-4">
             <p>
                 {address ?? ""}
             </p>
