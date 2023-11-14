@@ -1,3 +1,4 @@
+"use client"
 import BookDetails from '@/components/book-details'
 import CopyText from '@/components/copy-text'
 import Redirect from '@/components/redirect'
@@ -9,29 +10,29 @@ import { Publication, User } from '@prisma/client'
 import { isNull } from 'lodash'
 import { Heart, HistoryIcon, Wallet } from 'lucide-react'
 import React from 'react'
+import { useContext } from 'react'
+import {AppContext} from '../app-context'
 
-async function DashboardPage() {
-    const session = await getServerAuthSession()
-    const user = session?.user
-    let publications: Array<Publication & { creator: User | null } | null> = []
-    if(isNull(user?.walletAddress)) {
-        return <Redirect 
-            link='/setup-wallet'
-        />
-    }
+function DashboardPage() {
+    const appContext = useContext(AppContext);
+    // const session = await getServerAuthSession()
+    // const user = session?.user
+    // let publications: Array<Publication & { creator: User | null } | null> = []
+    // if(isNull(user?.walletAddress)) {
+    //     return <Redirect 
+    //         link='/setup-wallet'
+    //     />
+    // }
 
-    try {
-        publications = await getFavouritePublications()
-    }
-    catch(e)
-    {
+    // try {
+    //     publications = await getFavouritePublications()
+    // }
+    // catch(e)
+    // {
 
-    }
-
-
+    // }
   return (
     <div className="flex flex-col items-center justify-centet w-full space-y-10 px-2 pb-[100px]">
-
         {/* Wallet Section */}
         <div className="flex flex-col w-full space-y-5 ring-1 ring-amber-100 rounded-md shadow-lg px-5 py-5 ">
                 <h2 className='text-xl font-semibold' >
@@ -51,7 +52,7 @@ async function DashboardPage() {
                     </div>
                     <CopyText
                         className='col-span-4'
-                        text={user?.walletAddress ?? ""}
+                        text={appContext.user_address}
                         title={"Account Address"}
                         icon='BookUser'
                         defaultView
@@ -107,15 +108,15 @@ async function DashboardPage() {
             </div>
             <div className="flex flex-col w-full gap-y-5">
                 {
-                    publications?.map((publication, i)=> {
-                        return  (
-                        <BookDetails
-                            key={i}
-                            // @ts-ignore
-                            publication={publication}
-                        />
-                        )
-                    })
+                    // publications?.map((publication, i)=> {
+                    //     return  (
+                    //     <BookDetails
+                    //         key={i}
+                    //         // @ts-ignore
+                    //         publication={publication}
+                    //     />
+                    //     )
+                    // })
                 }
             </div>
         </div>
