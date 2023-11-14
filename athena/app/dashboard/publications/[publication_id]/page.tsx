@@ -9,8 +9,8 @@ import Interactions from '../../../../components/book-details/interactions'
 import CommentsSection from '@/components/comments'
 import { PageProps } from '@/.next/types/app/page'
 
-async function PublicationPage(props: PageProps) {
-    const { params, searchParams } = props 
+async function PublicationPage(props: PageProps & {showRead: boolean}) {
+    const { params, searchParams, showRead } = props 
     const publication_id = params.publication_id
 
     console.log("Publication::", publication_id)
@@ -74,6 +74,7 @@ async function PublicationPage(props: PageProps) {
             
             {publication && <Interactions
                 publication={publication}
+                showRead
             />}
 
         </div>
