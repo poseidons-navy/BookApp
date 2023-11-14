@@ -1,4 +1,3 @@
-import { PageProps } from '@/.next/types/app/page'
 import { Comment, Publication, User } from '@prisma/client'
 import React from 'react'
 import { prisma } from "@/lib/prisma"
@@ -8,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import BackButton from '@/components/back-button'
+import { PageProps } from '@/.next/types/app/page'
 
 async function page(props: PageProps) {
   const publication_id = props.params.publication_id
