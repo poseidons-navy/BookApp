@@ -45,7 +45,7 @@ export default function DashboardLayout(props: Props){
                     />
                     <NavigationLink
                         title={"Market"}
-                        link="/market"
+                        link="/dashboard/market"
                         icon={StoreIcon} 
                     />
                     
