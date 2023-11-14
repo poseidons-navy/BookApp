@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { createAccount } from '@/server/wallet'
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
+import { Wallet } from 'lucide-react'
 
 
 const formSchema = z.object({
@@ -36,11 +37,11 @@ function SettupWallet() {
 
     const {toast} = useToast()
 
-    async function onSubmit(values: z.infer<typeof formSchema>) {
+    async function onSubmit() {
 
 
         try {
-            const user = await createAccount(values.password)
+            const user = await createAccount()
             console.log("User::", user)
 
             push("/dashboard")
@@ -65,7 +66,13 @@ function SettupWallet() {
   return (
     <div className="flex flex-col items-center justify-center px-5 py-5 w-full h-screen">
 
-        <div className="flex flex-col w-1/2 h-4/5 space-y-5">
+        <Button onClick={onSubmit}>
+            Log in with
+            <span>
+                <Wallet/>
+            </span>
+        </Button>
+        {/* <div className="flex flex-col w-1/2 h-4/5 space-y-5">
             <h3 className='text-2xl font-semibold' >
                 Setup you account
             </h3>
@@ -116,7 +123,7 @@ function SettupWallet() {
                 </form>
             </Form>
             
-        </div>
+        </div> */}
     </div>
   )
 }

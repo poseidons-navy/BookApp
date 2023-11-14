@@ -11,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Publication } from '@prisma/client'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useSession } from 'next-auth/react'
 import { z } from 'zod'
 import { createProductAction, Book } from '@/algorand/books'
 import { getServerAuthSession } from '@/server/auth'
@@ -32,6 +33,7 @@ type Schema = z.infer<typeof formSchema>
 function CreateStore() {
     const [loading, setLoading] = useState(false)
     const { toast } = useToast()
+    const session = useSession();
     const form = useForm<Schema>({
         resolver: zodResolver(formSchema)
     })
@@ -44,9 +46,10 @@ function CreateStore() {
             const publication = await  createPublication({
                 ...values
             })
-            const session = await getServerAuthSession();
 
+            console.log(2)
             if (session == null) throw Error("Not Logged In")
+            console.log(3)
 
             const book = new Book(
                 publication.name ?? "",
@@ -54,13 +57,14 @@ function CreateStore() {
                 publication.price ?? 10,
                 false,
                 0,
-                session.user.walletAddress,
+                session.data?.user.walletAddress,
                 publication.id
             )
-            await createProductAction(session.user.walletAddress, book)
-
+            console.log(4)
+            await createProductAction(session.data?.user.walletAddress, book)
+            console.log(5)
             window.location.href = `/dashboard/publications/${publication.id}`
-
+            console.log(6)
             toast({
                 title: "🎉 Success",
                 description: "Publication successfully created",
