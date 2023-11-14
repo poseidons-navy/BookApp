@@ -10,6 +10,7 @@ import { Publication, User } from '@prisma/client'
 import { isNull } from 'lodash'
 import { HistoryIcon, Wallet, Heart } from 'lucide-react'
 import React from 'react'
+
 import { LocalStorageKeys } from '../helpers/local_storage_keys'
 // import { useContext } from 'react'
 // import {AppContext} from '../app-context'
@@ -101,28 +102,7 @@ function DashboardPage() {
 
         </div>
 
-        {/* Favourites */}
-        <div className="flex flex-col gap-y-4 w-full px-5 py-5">
-            <div className="flex flex-row items-center gap-x-4">
-                <Heart fill="red" stroke='red' />
-                <h2 className="text-lg font-semibold">
-                    Your favourite reads.
-                </h2>
-            </div>
-            <div className="flex flex-col w-full gap-y-5">
-                {
-                    // publications?.map((publication, i)=> {
-                    //     return  (
-                    //     <BookDetails
-                    //         key={i}
-                    //         // @ts-ignore
-                    //         publication={publication}
-                    //     />
-                    //     )
-                    // })
-                }
-            </div>
-        </div>
+        
 
         
     </div>
