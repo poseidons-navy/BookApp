@@ -1,5 +1,6 @@
 "use client"
 
+import { buyProductAction, Book } from '@/algorand/books'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { getPublicationSaveEvent, removePublicationSaveEvent, savePublication } from '@/server/publication'
@@ -12,8 +13,8 @@ import React, { useEffect, useState } from 'react'
 
 
 
-function Interactions(props: { publication: Partial<Publication & { creator: User | null }> | null, className?: string, showRead: boolean }) {
-    const { publication, className, showRead } = props
+function Interactions(props: { publication: Partial<Publication & { creator: User | null }> | null, className?: string, showRead: boolean, appId?: number, senderAddress?: string, ownerAddress?: string }) {
+    const { publication, className, showRead, appId, senderAddress, ownerAddress } = props
     const [saveEvent, setSaveEvent] = useState<UserEvent | null>(null)
     const [loading, setLoading] = useState(false)
     const [eventLoading, setEventLoading] = useState(false)
@@ -80,6 +81,40 @@ function Interactions(props: { publication: Partial<Publication & { creator: Use
         }
     }
 
+    function buyBook() {
+        if (appId == null || senderAddress == null || ownerAddress == null) {
+            toast({
+                variant: "destructive",
+                title: "!Oops",
+                description: "Could Not Buy Book"
+            })
+        } else {
+            const book = new Book(
+                publication?.name ?? "", 
+                publication?.cover ?? "", 
+                publication?.price ?? 10,
+                false,
+                appId,
+                ownerAddress,
+                publication?.id ?? ""
+            )
+           try {
+            buyProductAction(senderAddress, book);
+            toast({
+                title: "🎉 Success",
+                description: "Successfully bought book",
+            })
+           } catch(err) {
+            console.log(err);
+            toast({
+                variant: "destructive",
+                title: "!Oops",
+                description: "Could Not Buy Book"
+            })
+           }
+        }
+    }
+
     useEffect(() => {
         (async () => {
             await loadSaveEvent()
@@ -108,7 +143,7 @@ function Interactions(props: { publication: Partial<Publication & { creator: Use
                     <BookOpenText />
                     <span>Read</span>
                 </Button>
-            </Link> : <Button className='gap-x-4' variant={'outline'} >
+            </Link> : <Button className='gap-x-4' variant={'outline'} onClick={buyBook}>
                 <BookOpenText />
                 <span>Buy</span>
             </Button>}

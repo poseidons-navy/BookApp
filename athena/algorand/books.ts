@@ -18,7 +18,7 @@ global.Buffer = global.Buffer || require('buffer').Buffer
 
 const ALGO_PER_DOLLAR = 0.14;
 
-class Book {
+export class Book {
     name: string
     image: string
     price: number
@@ -155,7 +155,7 @@ export const buyProductAction = async (senderAddress: string, book: Book) => {
 }
 
 // GET PRODUCTS: Use indexer
-export const getProductsAction = async () => {
+export const getBooksAction = async () => {
     console.log("Fetching books...")
     let note = new TextEncoder().encode(bookAppNote);
     let encodedNote = Buffer.from(note).toString("base64");

@@ -12,6 +12,8 @@ import { Publication } from '@prisma/client'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { createProductAction, Book } from '@/algorand/books'
+import { getServerAuthSession } from '@/server/auth'
 
 const formSchema = z.object({
     name: z.string(),
@@ -42,6 +44,20 @@ function CreateStore() {
             const publication = await  createPublication({
                 ...values
             })
+            const session = await getServerAuthSession();
+
+            if (session == null) throw Error("Not Logged In")
+
+            const book = new Book(
+                publication.name ?? "",
+                publication.cover ?? "",
+                publication.price ?? 10,
+                false,
+                0,
+                session.user.walletAddress,
+                publication.id
+            )
+            await createProductAction(session.user.walletAddress, book)
 
             window.location.href = `/dashboard/publications/${publication.id}`
 
@@ -52,6 +68,7 @@ function CreateStore() {
         }
         catch(e)
         {
+            console.log(e)
             toast({
                 variant: "destructive",
                 title: "!Uh-oh",

@@ -121,6 +121,7 @@ function StorePage() {
               <BookDetails
                 key={i}
                 publication={publication}
+                showRead={true}
               />
             )
           })

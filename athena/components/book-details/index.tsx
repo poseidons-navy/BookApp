@@ -15,7 +15,7 @@ interface Props {
 
 function BookDetails( props: Props) {
     const p = props
-    const { publication: { cover, name, description, price, creator, id, creator_id }, showRead } = p
+    const { publication: { cover, name, description, price, creator, id, creator_id }, showRead, appId } = p
     const { data } = useSession()
 
   return (
