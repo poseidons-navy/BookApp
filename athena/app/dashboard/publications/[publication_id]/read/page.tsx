@@ -1,6 +1,7 @@
 import { PageProps } from '@/.next/types/app/page';
 import DocumentSection from '@/components/document'
 import React from 'react'
+import { prisma } from "@/lib/prisma"
 
 async function ReadPage(props: PageProps) {
 
