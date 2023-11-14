@@ -84,6 +84,7 @@ function MarketPage() {
                     <BookDetails
                         key={i}
                         publication={publication}
+                        showRead={false}
                     />
                     )
                 })

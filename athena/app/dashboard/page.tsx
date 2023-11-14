@@ -1,4 +1,3 @@
-import BookDetails from '@/components/book-details'
 import CopyText from '@/components/copy-text'
 import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'

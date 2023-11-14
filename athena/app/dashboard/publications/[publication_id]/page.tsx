@@ -1,5 +1,4 @@
 import { PageProps } from '@/.next/types/app/page'
-import BookDetails from '@/components/book-details'
 import { Button } from '@/components/ui/button'
 import { getServerAuthSession } from '@/server/auth'
 import { Publication, User } from '@prisma/client'
@@ -74,6 +73,7 @@ async function PublicationPage(props: PageProps) {
             
             {publication && <Interactions
                 publication={publication}
+                showRead={true}
             />}
 
         </div>

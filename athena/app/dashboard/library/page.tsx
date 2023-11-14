@@ -80,6 +80,7 @@ function Library() {
               <BookDetails
                 key={i}
                 publication={publication}
+                showRead={true}
               />
             )
           })
