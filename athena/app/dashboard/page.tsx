@@ -6,8 +6,9 @@ import { getServerAuthSession } from '@/server/auth'
 import { getFavouritePublications } from '@/server/publication'
 import { Publication, User } from '@prisma/client'
 import { isNull } from 'lodash'
-import { HistoryIcon, Wallet } from 'lucide-react'
+import { HistoryIcon, Wallet, Heart } from 'lucide-react'
 import React from 'react'
+import BookDetails from '@/components/book-details'
 
 async function DashboardPage() {
     const session = await getServerAuthSession()
@@ -94,29 +95,6 @@ async function DashboardPage() {
                 </TableBody>
             </Table>
 
-        </div>
-
-        {/* Favourites */}
-        <div className="flex flex-col gap-y-4 w-full px-5 py-5">
-            <div className="flex flex-row items-center gap-x-4">
-                <Heart fill="red" stroke='red' />
-                <h2 className="text-lg font-semibold">
-                    Your favourite reads.
-                </h2>
-            </div>
-            <div className="flex flex-col w-full gap-y-5">
-                {
-                    publications?.map((publication, i)=> {
-                        return  (
-                        <BookDetails
-                            key={i}
-                            // @ts-ignore
-                            publication={publication}
-                        />
-                        )
-                    })
-                }
-            </div>
         </div>
 
         
