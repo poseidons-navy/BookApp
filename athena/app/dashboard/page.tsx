@@ -1,3 +1,4 @@
+import BookDetails from '@/components/book-details'
 import CopyText from '@/components/copy-text'
 import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'
@@ -6,7 +7,7 @@ import { getServerAuthSession } from '@/server/auth'
 import { getFavouritePublications } from '@/server/publication'
 import { Publication, User } from '@prisma/client'
 import { isNull } from 'lodash'
-import { HistoryIcon, Wallet, Heart } from 'lucide-react'
+import { HistoryIcon, Wallet } from 'lucide-react'
 import React from 'react'
 import BookDetails from '@/components/book-details'
 

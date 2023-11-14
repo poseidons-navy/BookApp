@@ -1,4 +1,4 @@
-import { PageProps } from '@/.next/types/app/layout';
+import { PageProps } from '@/.next/types/app/page';
 import DocumentSection from '@/components/document'
 import React from 'react'
 

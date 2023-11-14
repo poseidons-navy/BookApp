@@ -1,9 +1,9 @@
-import { PageProps } from '@/.next/types/app/layout'
 import { Publication } from '@prisma/client'
 import React from 'react'
 import { prisma } from "@/lib/prisma"
 import EditPublication from './edit-form'
 import BackButton from '@/components/back-button'
+import { PageProps } from '@/.next/types/app/page'
 
 async function PublicationPage(props: PageProps) {
     const params = props.params
