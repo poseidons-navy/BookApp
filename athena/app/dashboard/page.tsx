@@ -1,24 +1,36 @@
 "use client"
+import BookDetails from '@/components/book-details'
 import CopyText from '@/components/copy-text'
 import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { getServerAuthSession } from '@/server/auth'
+import { getFavouritePublications } from '@/server/publication'
+import { Publication, User } from '@prisma/client'
 import { isNull } from 'lodash'
-import { HistoryIcon, Wallet } from 'lucide-react'
+import { Heart, HistoryIcon, Wallet } from 'lucide-react'
 import React from 'react'
 import { useContext } from 'react'
 import {AppContext} from '../app-context'
 
 function DashboardPage() {
+    const appContext = useContext(AppContext);
     // const session = await getServerAuthSession()
     // const user = session?.user
+    // let publications: Array<Publication & { creator: User | null } | null> = []
     // if(isNull(user?.walletAddress)) {
     //     return <Redirect 
     //         link='/setup-wallet'
     //     />
     // }
-    const appContext = useContext(AppContext);
+
+    // try {
+    //     publications = await getFavouritePublications()
+    // }
+    // catch(e)
+    // {
+
+    // }
   return (
     <div className="flex flex-col items-center justify-centet w-full space-y-10 px-2 pb-[100px]">
         {/* Wallet Section */}
@@ -84,6 +96,29 @@ function DashboardPage() {
                 </TableBody>
             </Table>
 
+        </div>
+
+        {/* Favourites */}
+        <div className="flex flex-col gap-y-4 w-full px-5 py-5">
+            <div className="flex flex-row items-center gap-x-4">
+                <Heart fill="red" stroke='red' />
+                <h2 className="text-lg font-semibold">
+                    Your favourite reads.
+                </h2>
+            </div>
+            <div className="flex flex-col w-full gap-y-5">
+                {
+                    // publications?.map((publication, i)=> {
+                    //     return  (
+                    //     <BookDetails
+                    //         key={i}
+                    //         // @ts-ignore
+                    //         publication={publication}
+                    //     />
+                    //     )
+                    // })
+                }
+            </div>
         </div>
 
         
