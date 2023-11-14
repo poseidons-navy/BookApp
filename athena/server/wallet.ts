@@ -6,9 +6,12 @@ import { myAlgoConnect } from "@/algorand/constants"
 import { getServerAuthSession } from "./auth"
 
 export const createAccount = async () => {
+    console.log(3)
     const session = await getServerAuthSession()
+    console.log(4)
     // const account = algosdk.generateAccount()   
     const accounts = await myAlgoConnect.connect();
+    console.log(5)
     const address = accounts[0].address;
 
 
@@ -22,6 +25,7 @@ export const createAccount = async () => {
             publicKey: address
         }
     })
+    console.log(6)
 
     return user
 

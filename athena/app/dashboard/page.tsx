@@ -1,4 +1,5 @@
 import CopyText from '@/components/copy-text'
+import DecryptPrivateKey from '@/components/decrypt-private-key'
 import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -12,6 +13,7 @@ import React from 'react'
 async function DashboardPage() {
     const session = await getServerAuthSession()
     const user = session?.user
+    console.log(user?.walletAddress);
     let publications: Array<Publication & { creator: User | null } | null> = []
     if(isNull(user?.walletAddress)) {
         return <Redirect 
@@ -59,6 +61,7 @@ async function DashboardPage() {
                     <Button  className='col-span-1' >
                         Withdraw
                     </Button>
+                    <DecryptPrivateKey visible={true}/>
                 </div>
         </div>
 

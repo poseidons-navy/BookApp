@@ -41,6 +41,7 @@ function SettupWallet() {
 
 
         try {
+            console.log(1);
             const user = await createAccount()
             console.log("User::", user)
 
@@ -65,14 +66,7 @@ function SettupWallet() {
 
   return (
     <div className="flex flex-col items-center justify-center px-5 py-5 w-full h-screen">
-
-        <Button onClick={onSubmit}>
-            Log in with
-            <span>
-                <Wallet/>
-            </span>
-        </Button>
-        {/* <div className="flex flex-col w-1/2 h-4/5 space-y-5">
+        <div className="flex flex-col w-1/2 h-4/5 space-y-5">
             <h3 className='text-2xl font-semibold' >
                 Setup you account
             </h3>
@@ -123,7 +117,7 @@ function SettupWallet() {
                 </form>
             </Form>
             
-        </div> */}
+        </div>
     </div>
   )
 }

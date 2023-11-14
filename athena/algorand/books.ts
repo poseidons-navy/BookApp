@@ -47,7 +47,7 @@ const compileProgram = async (programSource) => {
 }
 
 // CREATE PRODUCT: ApplicationCreateTxn
-export const createProductAction = async (senderAddress: string, book: Book) => {
+export const createProductAction = async (senderAddress: string, book: Book, privateKey: Uint8Array) => {
     console.log("Adding book...")
 
     let params = await algodClient.getTransactionParams().do();
@@ -86,9 +86,10 @@ export const createProductAction = async (senderAddress: string, book: Book) => 
     let txId = txn.txID().toString();
 
     // Sign & submit the transaction
-    let signedTxn = await myAlgoConnect.signTransaction(txn.toByte());
+    // let signedTxn = await myAlgoConnect.signTransaction(txn.toByte());
+    const signedTxn = txn.signTxn(privateKey);
     console.log("Signed transaction with txID: %s", txId);
-    await algodClient.sendRawTransaction(signedTxn.blob).do();
+    await algodClient.sendRawTransaction(signedTxn).do();
 
     // Wait for transaction to be confirmed
     let confirmedTxn = await algosdk.waitForConfirmation(algodClient, txId, 4);

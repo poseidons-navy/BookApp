@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import AuthProvider from '@/components/hoc/auth-provider'
 import { Toaster } from '@/components/ui/toaster'
+import PrivateKeyProvider from '@/context/private-key-context'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,7 +22,9 @@ export default function RootLayout({
       
       <body className={inter.className}>
         <AuthProvider>
-          {children}
+          <PrivateKeyProvider>
+            {children}
+          </PrivateKeyProvider>
           <Toaster/>
         </AuthProvider>
       </body>
