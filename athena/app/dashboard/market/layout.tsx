@@ -8,7 +8,7 @@ function layout(props: Props) {
     const { children } = props
   return (
     <div className="flex flex-col items-center justify-start col-span-4 w-full h-screen relative ">
-        <MarketTopBar/>
+        {/* <MarketTopBar/> */}
         <div className="flex flex-col pt-5 px-5 w-full h-full overflow-y-scroll">
             {children}
         </div>
