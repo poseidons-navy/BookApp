@@ -48,6 +48,11 @@ export default function DashboardLayout(props: Props){
                         link="/dashboard/market"
                         icon={StoreIcon} 
                     />
+                    <NavigationLink
+                        title={"Favourites"}
+                        link="/dashboard/favourites"
+                        icon={Heart} 
+                    />
                     
                 </div>
 

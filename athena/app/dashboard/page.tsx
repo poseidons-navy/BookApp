@@ -95,32 +95,7 @@ async function DashboardPage() {
                 </TableBody>
             </Table>
 
-        </div>
-
-        {/* Favourites */}
-        <div className="flex flex-col gap-y-4 w-full px-5 py-5">
-            <div className="flex flex-row items-center gap-x-4">
-                <Heart fill="red" stroke='red' />
-                <h2 className="text-lg font-semibold">
-                    Your favourite reads.
-                </h2>
-            </div>
-            <div className="flex flex-col w-full gap-y-5">
-                {
-                    publications?.map((publication, i)=> {
-                        return  (
-                        <BookDetails
-                            key={i}
-                            // @ts-ignore
-                            publication={publication}
-                        />
-                        )
-                    })
-                }
-            </div>
-        </div>
-
-        
+        </div>        
     </div>
   )
 }
