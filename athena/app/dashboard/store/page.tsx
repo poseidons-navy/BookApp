@@ -76,7 +76,6 @@ function StorePage() {
  
       <Link href="/dashboard/store/new" legacyBehavior >
         <div className="flex cursor-pointer shadow-sm hover:bg-slate-100 flex-col items-center justify-center w-full rounded-md h-[100px] ring-1 ring-amber-50 ">
-
             <PlusIcon />
             <span>
               Create a new publication
