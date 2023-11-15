@@ -160,7 +160,7 @@ function CreateStore() {
                                 return (
                                     <FormItem>
                                         <FormLabel>
-                                            The Publication PDF
+                                            The Publication PDF <i>(file should not exceed 4MB)</i>
                                         </FormLabel>
                                         <FormControl>
                                             {/* <Textarea {...field} placeholder='Description' className='h-[100px]' /> */}
@@ -196,7 +196,7 @@ function CreateStore() {
                                 return (
                                     <FormItem>
                                         <FormLabel>
-                                            The Publication Cover page
+                                            The Publication Cover page <i>(file should not exceed 4MB)</i>
                                         </FormLabel>
                                         <FormControl>
                                             {/* <Textarea {...field} placeholder='Description' className='h-[100px]' /> */}
