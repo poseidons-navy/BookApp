@@ -45,7 +45,7 @@ async function DashboardPage() {
                     Your Wallet
                 </h2>
                 <div className="grid grid-cols-4 w-full gap-y-4">
-                    <div className="col-span-4 flex flex-row items-center justify-between">
+                    <div className="col-span-2 flex flex-row items-center justify-between">
                         <div className="flex flex-row items-center gap-x-5">
                             <Wallet/>
                             <span className="font-semibold text-lg">
@@ -63,10 +63,6 @@ async function DashboardPage() {
                         icon='BookUser'
                         defaultView
                     />
-                    
-                    <Button  className='col-span-1' >
-                        Withdraw
-                    </Button>
                     <DecryptPrivateKey visible={true}/>
                 </div>
         </div>

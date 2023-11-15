@@ -26,12 +26,14 @@ export async function fetchBalance() {
     const algodPort = '';
     const algodClient = new algosdk.Algodv2(algodToken, algodServer, algodPort);
 
+    console.log("Getting Balance");
     const session = await getServerAuthSession();
     const user = session?.user;
 
     try {
         const acctInfo = await algodClient.accountInformation(user?.walletAddress).do();
         const balance = acctInfo.amount;
+        console.log("Got Balance")
         return balance;
     } catch(err) {
         throw Error("Could Not Get Balance")
@@ -205,6 +207,7 @@ export async function getPurchasedBooks(search?: string, status?: PublicationSta
     const session = await getServerAuthSession()
     const user = session?.user
 
+    console.log("Getting Purchased Books");
     const publications = await prisma.publication.findMany({
         where: {
             purchases: {
@@ -223,7 +226,7 @@ export async function getPurchasedBooks(search?: string, status?: PublicationSta
         }
     })
 
-
+    console.log("Got Purchased Books");
     return publications
 }
 

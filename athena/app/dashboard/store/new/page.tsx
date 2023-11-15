@@ -160,7 +160,7 @@ function CreateStore() {
                                 return (
                                     <FormItem>
                                         <FormLabel>
-                                            The Publication PDF
+                                            The Publication PDF <i>(file should not exceed 4MB)</i>
                                         </FormLabel>
                                         <FormControl>
                                             {/* <Textarea {...field} placeholder='Description' className='h-[100px]' /> */}
@@ -171,13 +171,17 @@ function CreateStore() {
 
                                                     if (upload) {
                                                         field.onChange(upload.url)
+                                                        toast({
+                                                            title: "Success!",
+                                                            description: "Successfully uploaded the file"
+                                                        })
                                                     }
                                                 }}
                                                 onUploadError={(e) => {
                                                     toast({
                                                         variant: "destructive",
                                                         title: "!Oops",
-                                                        description: "Something went wrong with the upload"
+                                                        description: "File should not exceed 4MB"
                                                     })
                                                 }}
                                             />
@@ -196,16 +200,15 @@ function CreateStore() {
                                 return (
                                     <FormItem>
                                         <FormLabel>
-                                            The Publication Cover page
+                                            The Publication Cover page  <i>(file should not exceed 4MB)</i>
                                         </FormLabel>
                                         <FormControl>
                                             {/* <Textarea {...field} placeholder='Description' className='h-[100px]' /> */}
                                             <UploadDropzone
                                                 onUploadError={(e) => {
                                                     toast({
-                                                        variant: "destructive",
-                                                        title: "!Oops",
-                                                        description: "Something went wrong with the upload"
+                                                        title: "Success!",
+                                                        description: "File should not exceed 4MB"
                                                     })
                                                 }}
                                                 endpoint='imageUploader'
@@ -214,6 +217,10 @@ function CreateStore() {
 
                                                     if (upload) {
                                                         field.onChange(upload.url)
+                                                        toast({
+                                                            title: "Success!",
+                                                            description: "Successfully uploaded the file"
+                                                        })
                                                     }
                                                 }}
                                             />
@@ -331,7 +338,7 @@ function CreateStore() {
                                 Submit
                             </Button>
                         </FormControl>
-                        <DecryptPrivateKey visible={showDialog} />
+                        {/*<DecryptPrivateKey visible={//showDialog} />*/}
 
                     </form>
                 </Form>

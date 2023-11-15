@@ -73,7 +73,7 @@ function MarketPage() {
 
   useEffect(()=>{
     (async ()=>{
-      await loadStoreData()
+      loadStoreData()
       // await getBooksFromBlockChain()
     })()
   }, [])

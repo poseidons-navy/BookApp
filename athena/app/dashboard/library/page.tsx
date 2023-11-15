@@ -58,7 +58,7 @@ function Library() {
 
   useEffect(()=>{
     (async ()=>{
-      await loadStoreData()
+      loadStoreData()
     })()
   }, [])
 
