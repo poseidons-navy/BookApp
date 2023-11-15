@@ -63,10 +63,6 @@ async function DashboardPage() {
                         icon='BookUser'
                         defaultView
                     />
-                    
-                    <Button  className='col-span-1' >
-                        Withdraw
-                    </Button>
                     <DecryptPrivateKey visible={true}/>
                 </div>
         </div>
