@@ -7,7 +7,7 @@ import { getServerAuthSession } from '@/server/auth'
 import { getFavouritePublications, getPurchasedBooks } from '@/server/publication'
 import { Purchase, User } from '@prisma/client'
 import { isNull } from 'lodash'
-import { Heart, HistoryIcon, Wallet } from 'lucide-react'
+import { HistoryIcon, Wallet, Heart } from 'lucide-react'
 import React from 'react'
 import { fetchBalance } from '@/server/publication'
 
@@ -35,10 +35,10 @@ async function DashboardPage() {
         
     }
 
+    
 
   return (
     <div className="flex flex-col items-center justify-centet w-full space-y-10 px-2 pb-[100px]">
-
         {/* Wallet Section */}
         <div className="flex flex-col w-full space-y-5 ring-1 ring-amber-100 rounded-md shadow-lg px-5 py-5 ">
                 <h2 className='text-xl font-semibold' >
@@ -58,7 +58,7 @@ async function DashboardPage() {
                     </div>
                     <CopyText
                         className='col-span-4'
-                        text={user?.walletAddress ?? ""}
+                        text={user.walletAddress ?? ""}
                         title={"Account Address"}
                         icon='BookUser'
                         defaultView
