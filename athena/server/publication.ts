@@ -2,7 +2,8 @@
 import { Publication, PublicationStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getServerAuthSession } from "./auth";
-
+import { getServerSession } from "next-auth";
+import algosdk from "algosdk";
 
 export async function createPublication(props: Omit<Publication, "id"| "created_at" | "status" | "creator_id" | "tags" >) {
     const session = await getServerAuthSession()
@@ -17,6 +18,41 @@ export async function createPublication(props: Omit<Publication, "id"| "created_
     })
 
     return new_publication
+}
+
+export async function fetchBalance() {
+    const algodToken = '';
+    const algodServer = 'https://testnet-api.algonode.network';
+    const algodPort = '';
+    const algodClient = new algosdk.Algodv2(algodToken, algodServer, algodPort);
+
+    console.log("Getting Balance");
+    const session = await getServerAuthSession();
+    const user = session?.user;
+
+    try {
+        const acctInfo = await algodClient.accountInformation(user?.walletAddress).do();
+        const balance = acctInfo.amount;
+        console.log("Got Balance")
+        return balance;
+    } catch(err) {
+        throw Error("Could Not Get Balance")
+    }
+}
+
+// Adds an entry to purchase table; called when a book is purchased
+export async function purchaseBook(publication_id: string) {
+    const session = await getServerAuthSession()
+    const user = session?.user
+
+    const new_purchase = await prisma.purchase.create({
+        data: {
+            user_id: user?.id,
+            publication_id: publication_id,
+        }
+    })
+
+    return new_purchase;
 }
 
 export async function getPublication(id: string) {
@@ -151,7 +187,7 @@ export async function getMarketPublications(search?: string){
 
     const publications = await prisma.publication.findMany({
         where: {
-            creator_id: user?.id,
+            // creator_id: user?.id,
             name: (search && search?.length > 0) ? {
                 contains: search?.length == 0 ? undefined : search,
                 mode: 'insensitive'
@@ -171,6 +207,7 @@ export async function getPurchasedBooks(search?: string, status?: PublicationSta
     const session = await getServerAuthSession()
     const user = session?.user
 
+    console.log("Getting Purchased Books");
     const publications = await prisma.publication.findMany({
         where: {
             purchases: {
@@ -189,7 +226,7 @@ export async function getPurchasedBooks(search?: string, status?: PublicationSta
         }
     })
 
-
+    console.log("Got Purchased Books");
     return publications
 }
 

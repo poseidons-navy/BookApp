@@ -1,4 +1,4 @@
-import BookDetails from '@/components/book-details'
+import { PageProps } from '@/.next/types/app/page'
 import { Button } from '@/components/ui/button'
 import { getServerAuthSession } from '@/server/auth'
 import { Publication, User } from '@prisma/client'
@@ -7,7 +7,6 @@ import Image from 'next/image'
 import React from 'react'
 import Interactions from '../../../../components/book-details/interactions'
 import CommentsSection from '@/components/comments'
-import { PageProps } from '@/.next/types/app/page'
 
 async function PublicationPage(props: PageProps) {
     const { params, searchParams } = props 
@@ -74,6 +73,7 @@ async function PublicationPage(props: PageProps) {
             
             {publication && <Interactions
                 publication={publication}
+                showRead={true}
             />}
 
         </div>

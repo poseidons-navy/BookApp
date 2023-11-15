@@ -145,13 +145,18 @@ function EditPublication(props: Props) {
 
                                                 if(upload){
                                                     field.onChange(upload.url)
-                                                }
+                                                toast({
+                                                    title: "!Oops",
+                                                    description: "Successfully uploaded the file"
+                                                })
+                                            }
+                                                
                                             }}
                                             onUploadError={(e)=>{
                                                 toast({
                                                     variant: "destructive",
                                                     title: "!Oops",
-                                                    description: "Something went wrong with the upload"
+                                                    description: "File should not exceed 4MB"
                                                 })
                                             }}
                                         />
@@ -170,7 +175,7 @@ function EditPublication(props: Props) {
                             return (
                                 <FormItem>
                                     <FormLabel>
-                                        The Publication Cover page
+                                        The Publication Cover page 
                                     </FormLabel>
                                     <FormControl>
                                         {/* <Textarea {...field} placeholder='Description' className='h-[100px]' /> */} 
@@ -179,16 +184,21 @@ function EditPublication(props: Props) {
                                                 toast({
                                                     variant: "destructive",
                                                     title: "!Oops",
-                                                    description: "Something went wrong with the upload"
+                                                    description: "File should not exceed 4MB"
                                                 })
                                             }}
                                             endpoint='imageUploader'
                                             onClientUploadComplete={(uploads)=>{
                                                 const upload = uploads?.at(-1)
-
+                                                        
                                                 if(upload){
                                                     field.onChange(upload.url)
+                                                    toast({
+                                                    title: "🎉 Success",
+                                                    description: "Publication successfully updated",
+                                                })
                                                 }
+                                                
                                             }}
                                         />
                                     </FormControl>

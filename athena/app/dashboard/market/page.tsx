@@ -6,15 +6,26 @@ import { getMarketPublications } from '@/server/publication'
 import { Publication, User } from '@prisma/client'
 import { Search } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
+import { getBooksAction, Book } from '@/algorand/books'
+import DecryptPrivateKey from '@/components/decrypt-private-key'
+import Library from '../library/page'
 
 function MarketPage() {
     const [search, setSearch] = useState<string>()
   const [searchLoading, setSearchLoading] = useState(false)
+  //const [algoBooks, setAlgoBooks] = useState<Book[]>([])
 
   const [{ data, loading }, setPublications] = useState<{ data: Array<Publication & { creator: User | null }>, loading: boolean }>({
     data: [],
     loading: false
   })
+
+  // async function getBooksFromBlockChain() {
+  //   let books = await getBooksAction();
+  //   console.log("Books Are: ")
+  //   console.log(books);
+  //   setAlgoBooks(books);
+  // }
 
 
   const loadStoreData = async (status?: any) => {
@@ -62,7 +73,8 @@ function MarketPage() {
 
   useEffect(()=>{
     (async ()=>{
-      await loadStoreData()
+      loadStoreData()
+      // await getBooksFromBlockChain()
     })()
   }, [])
   return (
@@ -77,15 +89,19 @@ function MarketPage() {
                 </Button>
             </div>
 
+            <DecryptPrivateKey visible={true}/>
+
             {!loading && <div className="flex flex-col w-full items-center gap-y-5">
             {
                 data?.map((publication, i)=> {
-                    return  (
+                  // let book = algoBooks.find((e) => e.book_id = publication.id);
+                  return  (
                     <BookDetails
                         key={i}
                         publication={publication}
+                        showRead={false}
                     />
-                    )
+                  )
                 })
                 }
             </div>}

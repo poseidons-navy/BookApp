@@ -1,39 +1,41 @@
-"use client"
-import BookDetails from '@/components/book-details'
 import CopyText from '@/components/copy-text'
+import DecryptPrivateKey from '@/components/decrypt-private-key'
 import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'
-import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { getServerAuthSession } from '@/server/auth'
-import { getFavouritePublications } from '@/server/publication'
-import { Publication, User } from '@prisma/client'
+import { getFavouritePublications, getPurchasedBooks } from '@/server/publication'
+import { Purchase, User } from '@prisma/client'
 import { isNull } from 'lodash'
 import { HistoryIcon, Wallet, Heart } from 'lucide-react'
 import React from 'react'
+import { fetchBalance } from '@/server/publication'
 
-import { LocalStorageKeys } from '../helpers/local_storage_keys'
-// import { useContext } from 'react'
-// import {AppContext} from '../app-context'
-
-function DashboardPage() {
-    // const appContext = useContext(AppContext);
-    // const session = await getServerAuthSession()
-    // const user = session?.user
+async function DashboardPage() {
+    const session = await getServerAuthSession()
+    const user = session?.user
     // let publications: Array<Publication & { creator: User | null } | null> = []
-    // if(isNull(user?.walletAddress)) {
-    //     return <Redirect 
-    //         link='/setup-wallet'
-    //     />
-    // }
+    // let purchaseHistory: Array<Purchase & {creator: User | null} | null> = []
+    let purchaseHistory = [];
+    let balance = 0;
+    if(isNull(user?.walletAddress)) {
+        return <Redirect 
+            link='/setup-wallet'
+        />
+    }
 
-    // try {
-    //     publications = await getFavouritePublications()
-    // }
-    // catch(e)
-    // {
+    try {
+        // publications = await getFavouritePublications()
+        purchaseHistory = await getPurchasedBooks(undefined, "published");
+        balance = await fetchBalance();
+        balance = balance / 1_000_000
+    }
+    catch(e)
+    {
+        
+    }
 
-    // }
-    const address = localStorage.getItem(LocalStorageKeys.USER_ADDRESS);
+    
 
   return (
     <div className="flex flex-col items-center justify-centet w-full space-y-10 px-2 pb-[100px]">
@@ -43,7 +45,7 @@ function DashboardPage() {
                     Your Wallet
                 </h2>
                 <div className="grid grid-cols-4 w-full gap-y-4">
-                    <div className="col-span-4 flex flex-row items-center justify-between">
+                    <div className="col-span-2 flex flex-row items-center justify-between">
                         <div className="flex flex-row items-center gap-x-5">
                             <Wallet/>
                             <span className="font-semibold text-lg">
@@ -51,20 +53,17 @@ function DashboardPage() {
                             </span>
                         </div>
                         <span>
-                            0 Algo something .. | 30 USD
+                            {balance} Algo | {(balance * 0.14).toFixed(2)} USD
                         </span>
                     </div>
                     <CopyText
                         className='col-span-4'
-                        text={address ?? ""}
+                        text={user.walletAddress ?? ""}
                         title={"Account Address"}
                         icon='BookUser'
                         defaultView
                     />
-                    
-                    <Button  className='col-span-1' >
-                        Withdraw
-                    </Button>
+                    <DecryptPrivateKey visible={true}/>
                 </div>
         </div>
 
@@ -87,7 +86,7 @@ function DashboardPage() {
                             Author
                         </TableHead>
                         <TableHead>
-                            TxnHash
+                            Genre
                         </TableHead>
                         <TableHead>
                             Price in USD
@@ -96,15 +95,18 @@ function DashboardPage() {
 
                 </TableHeader>
                 <TableBody>
-
+                    {purchaseHistory.map((elem, index) => {
+                        return <TableRow key={index}>
+                            <TableCell>{elem.name}</TableCell>
+                            <TableCell>{elem.creator.name}</TableCell>
+                            <TableCell>{elem.genre}</TableCell>
+                            <TableCell>{elem.price}</TableCell>
+                        </TableRow>
+                    })}
                 </TableBody>
             </Table>
 
-        </div>
-
-        
-
-        
+        </div>        
     </div>
   )
 }

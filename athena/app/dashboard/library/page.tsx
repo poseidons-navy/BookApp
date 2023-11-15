@@ -58,7 +58,7 @@ function Library() {
 
   useEffect(()=>{
     (async ()=>{
-      await loadStoreData()
+      loadStoreData()
     })()
   }, [])
 
@@ -80,6 +80,7 @@ function Library() {
               <BookDetails
                 key={i}
                 publication={publication}
+                showRead={true}
               />
             )
           })

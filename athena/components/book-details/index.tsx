@@ -15,7 +15,7 @@ interface Props {
 
 function BookDetails( props: Props) {
     const p = props
-    const { publication: { cover, name, description, price, creator, id, creator_id } } = p
+    const { publication: { cover, name, description, price, creator, id, creator_id }, showRead, appId } = p
     const { data } = useSession()
 
   return (
@@ -57,6 +57,8 @@ function BookDetails( props: Props) {
 
             <Interactions
                 publication={p.publication}
+                showRead={showRead}
+                appId={appId}
             />
             
             <Link href={`/dashboard/publications/${id}/comments`} legacyBehavior >
