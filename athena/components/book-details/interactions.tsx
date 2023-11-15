@@ -148,13 +148,13 @@ function Interactions(props: { publication: Partial<Publication & { creator: Use
                 title: "🎉 Success",
                 description: "Successfully bought book",
             })
-
+            window.location.href = '/dashboard/library'
            } catch(err) {
             console.log(err);
             toast({
                 variant: "destructive",
                 title: "!Oops",
-                description: "Could Not Buy Book"
+                description: "Decrypt key first or check algo balance"
             })
            }
         }
