@@ -109,7 +109,7 @@ function CreateStore() {
                 <BackButton />
             </div>
             <div className="flex flex-col w-4/5  h-full items-center justify-center px-5 ">
-                <h3 className='text-xl font-semibold' >
+                <h3 className='text-xl font-semibold ' >
                     Create your publication
                 </h3>
                 <Form {...form} >
@@ -325,14 +325,12 @@ function CreateStore() {
                             }}
                         />
 
-
+                        <DecryptPrivateKey visible={showDialog} />
                         <FormControl    >
                             <Button isLoading={loading} type="submit" >
                                 Submit
                             </Button>
                         </FormControl>
-                        <DecryptPrivateKey visible={showDialog} />
-
                     </form>
                 </Form>
             </div>
