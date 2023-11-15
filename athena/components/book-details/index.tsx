@@ -58,6 +58,7 @@ function BookDetails( props: Props) {
             <Interactions
                 publication={p.publication}
                 showRead={showRead}
+                appId={appId}
             />
             
             <Link href={`/dashboard/publications/${id}/comments`} legacyBehavior >

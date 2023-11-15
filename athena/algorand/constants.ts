@@ -24,8 +24,9 @@ export const minRound = 29556983;
 export const bookAppNote = "bookshop-marketplace:uv1"
 
 // Maximum local storage allocation, immutable
-export const numLocalInts = 0;
+export const numLocalInts = 2;
 export const numLocalBytes = 0;
 // Maximum global storage allocation, immutable
 export const numGlobalInts = 2; // Global variables stored as Int: count, sold
-export const numGlobalBytes = 3; 
+export const numGlobalBytes = 5; 
+export const DOLLAR_PER_ALGO = 0.14;

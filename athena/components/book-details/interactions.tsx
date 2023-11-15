@@ -1,24 +1,31 @@
 "use client"
 
-import { buyProductAction, Book } from '@/algorand/books'
+import { buyProductAction, Book, payForBook } from '@/algorand/books'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import { getPublicationSaveEvent, removePublicationSaveEvent, savePublication } from '@/server/publication'
-import { Publication, User, UserEvent } from '@prisma/client'
+import { getPublicationSaveEvent, removePublicationSaveEvent, savePublication, getPublication, purchaseBook} from '@/server/publication'
+import { Publication, User, UserEvent, Purchase } from '@prisma/client'
 import clsx from 'clsx'
 import { isNull } from 'lodash'
 import { BookOpenText, HeartIcon } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { usePrivateKey } from '@/context/private-key-context'
+import DecryptPrivateKey from '../decrypt-private-key'
+import { DOLLAR_PER_ALGO } from '@/algorand/constants'
+import Library from '@/app/dashboard/library/page'
 
 
-
-function Interactions(props: { publication: Partial<Publication & { creator: User | null }> | null, className?: string, showRead: boolean, appId?: number, senderAddress?: string, ownerAddress?: string }) {
-    const { publication, className, showRead, appId, senderAddress, ownerAddress } = props
+function Interactions(props: { publication: Partial<Publication & { creator: User | null }> | null, className?: string, showRead: boolean, appId?: number }) {
+    const { publication, className, showRead, appId } = props
     const [saveEvent, setSaveEvent] = useState<UserEvent | null>(null)
     const [loading, setLoading] = useState(false)
     const [eventLoading, setEventLoading] = useState(false)
     const { toast } = useToast()
+    const session = useSession();
+    const {decryptKey, privateKey} = usePrivateKey();
+
 
     const handleLike = async () => {
         console.log("Publication::", publication)
@@ -82,28 +89,66 @@ function Interactions(props: { publication: Partial<Publication & { creator: Use
     }
 
     function buyBook() {
-        if (appId == null || senderAddress == null || ownerAddress == null) {
+
+        if (session == null) {
             toast({
                 variant: "destructive",
                 title: "!Oops",
-                description: "Could Not Buy Book"
+                description: "Not Logged In"
             })
-        } else {
-            const book = new Book(
-                publication?.name ?? "", 
-                publication?.cover ?? "", 
-                publication?.price ?? 10,
-                false,
-                appId,
-                ownerAddress,
-                publication?.id ?? ""
-            )
+        }
+        // else if (appId == null) {
+        //     toast({
+        //         variant: "destructive",
+        //         title: "!Oops",
+        //         description: "Could Not Buy Book"
+        //     })
+        // }
+         else {
+            let price = publication?.price ?? 1;
+            price = price * DOLLAR_PER_ALGO;
+
+            price = Math.round(price);
+
+            var owner_address = publication?.creator?.walletAddress;
+
+            // const book = new Book(
+            //     publication?.name ?? "", 
+            //     publication?.cover ?? "", 
+            //     price,
+            //     false,
+            //     appId,
+            //     publication?.creator?.publicKey ?? "",
+            //     publication?.id ?? ""
+            // )
+
+            // console.log("Book Arguements are:")
+            // console.log({
+            //     name: publication?.name ?? "", 
+            //     conver: publication?.cover ?? "", 
+            //     price: price,
+            //     sold: false,
+            //     appID: appId,
+            //     owner_key: publication?.creator?.publicKey ?? "",
+            //     book_id: publication?.id ?? ""
+            // })
            try {
-            buyProductAction(senderAddress, book);
+            const senderAddress = session.data?.user.publicKey;
+
+            if (privateKey == null) throw Error("De encrypt key")
+
+            // buyProductAction(senderAddress, book, privateKey);
+            payForBook(senderAddress, owner_address ?? "", price, privateKey)
+            // if (publication?.id) {
+            //     (publication.id);
+            //   }
+            // 
+            purchaseBook(publication?.id ?? "");
             toast({
                 title: "🎉 Success",
                 description: "Successfully bought book",
             })
+
            } catch(err) {
             console.log(err);
             toast({
@@ -126,6 +171,7 @@ function Interactions(props: { publication: Partial<Publication & { creator: Use
 
     return (
         <div className={clsx("flex flex-row items-center gap-x-5", className)}>
+            
             <Button onClick={() => {
                 // saveEvent ? handleLike : removeLike
                 if (isNull(saveEvent)) {

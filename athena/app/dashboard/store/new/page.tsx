@@ -48,10 +48,7 @@ function CreateStore() {
         setLoading(true)
         try {
 
-            if (privateKey == null) {
-                setShowDialog(true)
-                return;
-            }
+            if (privateKey == null) throw Error("Deencrypt password")
 
             const publication = await createPublication({
                 ...values
@@ -70,6 +67,17 @@ function CreateStore() {
                 session.data?.user.walletAddress,
                 publication.id
             )
+
+            console.log("Book Arguements:")
+            console.log({
+                name: publication.name ?? "",
+                cover: publication.cover ?? "",
+                price: publication.price ?? 10,
+                saved: false,
+                appId: 0,
+                walletAddress: session.data?.user.walletAddress,
+                id: publication.id
+            })
             console.log(4)
             console.log(privateKey);
             await createProductAction(session.data?.user.walletAddress, book, privateKey)

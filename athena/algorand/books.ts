@@ -13,7 +13,8 @@ import {
 /* eslint import/no-webpack-loader-syntax: off */
 import approvalProgram from "!!raw-loader!../contracts/bookshop_approval.teal";
 import clearProgram from "!!raw-loader!../contracts/bookshop_clear.teal";
-import {base64ToUTF8String, utf8ToBase64String} from "./conversions";
+import { base64ToUTF8String, utf8ToBase64String } from "./conversions";
+import { getServerAuthSession } from "@/server/auth";
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 const ALGO_PER_DOLLAR = 0.14;
@@ -35,6 +36,19 @@ export class Book {
         this.appId = appId;
         this.book_id = book_id
         this.owner = owner;
+    }
+}
+
+export async function fetchBalance() {
+    const session = await getServerAuthSession();
+    const user = session?.user;
+
+    try {
+        const acctInfo = await algodClient.accountInformation(user?.walletAddress).do();
+        const balance = acctInfo.amount;
+        return balance;
+    } catch(err) {
+        throw Error("Could Not Get Balance")
     }
 }
 
@@ -105,17 +119,20 @@ export const createProductAction = async (senderAddress: string, book: Book, pri
 }
 
 // BUY PRODUCT: Group transaction consisting of ApplicationCallTxn and PaymentTxn
-export const buyProductAction = async (senderAddress: string, book: Book) => {
+export const buyProductAction = async (senderAddress: string, book: Book, privateKey: Uint8Array) => {
     console.log("Buying book...");
 
+    console.log(1);
     let params = await algodClient.getTransactionParams().do();
     params.fee = algosdk.ALGORAND_MIN_TX_FEE;
     params.flatFee = true;
 
+    console.log(2);
     // Build required app args as Uint8Array
     let buyArg = new TextEncoder().encode("buy")
     let appArgs = [buyArg]
 
+    console.log(3);
     // Create ApplicationCallTxn
     let appCallTxn = algosdk.makeApplicationCallTxnFromObject({
         from: senderAddress,
@@ -125,25 +142,30 @@ export const buyProductAction = async (senderAddress: string, book: Book) => {
         appArgs: appArgs
     })
 
+    console.log(4);
     // Create PaymentTxn
     let paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         from: senderAddress,
         to: book.owner,
-        amount: book.price * ALGO_PER_DOLLAR,
+        amount: book.price,
         suggestedParams: params
     })
 
     let txnArray = [appCallTxn, paymentTxn]
 
+    console.log(5);
     // Create group transaction out of previously build transactions
     let groupID = algosdk.computeGroupID(txnArray)
     for (let i = 0; i < 2; i++) txnArray[i].group = groupID;
 
+    console.log(6);
     // Sign & submit the group transaction
-    let signedTxn = await myAlgoConnect.signTransaction(txnArray.map(txn => txn.toByte()));
+    // let signedTxn = await myAlgoConnect.signTransaction(txnArray.map(txn => txn.toByte()));
+    const signedTxn = txnArray.map(txn => txn.signTxn(privateKey))
     console.log("Signed group transaction");
-    let tx = await algodClient.sendRawTransaction(signedTxn.map(txn => txn.blob)).do();
+    let tx = await algodClient.sendRawTransaction(signedTxn.map(txn => txn)).do();
 
+    console.log(7);
     // Wait for group transaction to be confirmed
     let confirmedTxn = await algosdk.waitForConfirmation(algodClient, tx.txId, 4);
 
@@ -154,22 +176,29 @@ export const buyProductAction = async (senderAddress: string, book: Book) => {
 // GET PRODUCTS: Use indexer
 export const getBooksAction = async () => {
     console.log("Fetching books...")
+    console.log(1);
     let note = new TextEncoder().encode(bookAppNote);
     let encodedNote = Buffer.from(note).toString("base64");
 
+    console.log(2);
     // Step 1: Get all transactions by notePrefix (+ minRound filter for performance)
     let transactionInfo = await indexerClient.searchForTransactions()
         .notePrefix(encodedNote)
         .txType("appl")
-        .minRound(minRound)
+        .minRound(Number.MAX_SAFE_INTEGER)
         .do();
     let books = []
+    console.log("Transactions are:")
+    console.log(transactionInfo);
     for (const transaction of transactionInfo.transactions) {
+        console.log(3);
         let appId = transaction["created-application-index"]
         if (appId) {
+            console.log(4);
             // Step 2: Get each application by application id
             let book = await getApplication(appId)
             if (book) {
+                console.log(5);
                 books.push(book)
             }
         }
@@ -178,8 +207,44 @@ export const getBooksAction = async () => {
     return books
 }
 
+export async function payForBook(senderAddress: string, ownerAddress: string, price: number, senderPrivateKey?: Uint8Array) {
+    try {
+
+        if (senderPrivateKey == null) {
+            throw Error("Deencrypt Password")
+        }
+
+        const acctInfo = await algodClient.accountInformation(senderAddress).do();
+        console.log(`Account balance: ${acctInfo.amount} microAlgos`);
+
+        if (acctInfo.amount < price * 1_000_000) {
+            throw Error("Insufficient Funds");
+        }
+
+        const suggestedParams = await algodClient.getTransactionParams().do();
+        const ptxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+            from: senderAddress,
+            suggestedParams,
+            to: ownerAddress,
+            amount: price * 1_000_000,
+            note: new Uint8Array(Buffer.from('hello world')),
+        });
+
+        const signedTxn = ptxn.signTxn(senderPrivateKey);
+
+        const { txId } = await algodClient.sendRawTransaction(signedTxn).do();
+        const result = await algosdk.waitForConfirmation(algodClient, txId, 4);
+        console.log(result);
+        console.log(`Transaction Information: ${result.txn}`);
+        console.log(`Decoded Note: ${Buffer.from(result.txn.txn.note).toString()}`);
+    } catch (err) {
+        throw "Could Not Pay For Book"
+    }
+}
+
 const getApplication = async (appId: number) => {
     try {
+        console.log(6);
         // 1. Get application by appId
         let response = await indexerClient.lookupApplications(appId).includeAll(true).do();
         if (response.application.deleted) {
@@ -196,6 +261,7 @@ const getApplication = async (appId: number) => {
         let sold = 0
         let isSold = false;
 
+        console.log(7);
         const getField = (fieldName: string, globalState) => {
             return globalState.find(state => {
                 return state.key === utf8ToBase64String(fieldName);
@@ -203,29 +269,35 @@ const getApplication = async (appId: number) => {
         }
 
         if (getField("NAME", globalState) !== undefined) {
+            console.log(8);
             let field = getField("NAME", globalState).value.bytes
             name = base64ToUTF8String(field)
         }
 
         if (getField("IMAGE", globalState) !== undefined) {
+            console.log(9);
             let field = getField("IMAGE", globalState).value.bytes
             image = base64ToUTF8String(field)
         }
 
         if (getField("BOOK_ID", globalState) !== undefined) {
+            console.log(10);
             let field = getField("BOOK_ID", globalState).value.bytes
             book_id = base64ToUTF8String(field)
         }
 
         if (getField("PRICE", globalState) !== undefined) {
+            console.log(11);
             price = getField("PRICE", globalState).value.uint
         }
 
         if (getField("SOLD", globalState) !== undefined) {
+            console.log(12);
             sold = getField("SOLD", globalState).value.uint
             isSold = sold != 0
         }
 
+        console.log(13);
         return new Book(name, image, price, isSold, appId, owner, book_id)
     } catch (err) {
         return null;

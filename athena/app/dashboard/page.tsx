@@ -2,19 +2,22 @@ import CopyText from '@/components/copy-text'
 import DecryptPrivateKey from '@/components/decrypt-private-key'
 import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'
-import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { getServerAuthSession } from '@/server/auth'
-import { getFavouritePublications } from '@/server/publication'
-import { Publication, User } from '@prisma/client'
+import { getFavouritePublications, getPurchasedBooks } from '@/server/publication'
+import { Purchase, User } from '@prisma/client'
 import { isNull } from 'lodash'
 import { Heart, HistoryIcon, Wallet } from 'lucide-react'
 import React from 'react'
+import { fetchBalance } from '@/server/publication'
 
 async function DashboardPage() {
     const session = await getServerAuthSession()
     const user = session?.user
-    console.log(user?.walletAddress);
-    let publications: Array<Publication & { creator: User | null } | null> = []
+    // let publications: Array<Publication & { creator: User | null } | null> = []
+    // let purchaseHistory: Array<Purchase & {creator: User | null} | null> = []
+    let purchaseHistory = [];
+    let balance = 0;
     if(isNull(user?.walletAddress)) {
         return <Redirect 
             link='/setup-wallet'
@@ -22,11 +25,14 @@ async function DashboardPage() {
     }
 
     try {
-        publications = await getFavouritePublications()
+        // publications = await getFavouritePublications()
+        purchaseHistory = await getPurchasedBooks(undefined, "published");
+        balance = await fetchBalance();
+        balance = balance / 1_000_000
     }
     catch(e)
     {
-
+        
     }
 
 
@@ -47,7 +53,7 @@ async function DashboardPage() {
                             </span>
                         </div>
                         <span>
-                            0 Algo something .. | 30 USD
+                            {balance} Algo | {(balance * 0.14).toFixed(2)} USD
                         </span>
                     </div>
                     <CopyText
@@ -84,7 +90,7 @@ async function DashboardPage() {
                             Author
                         </TableHead>
                         <TableHead>
-                            TxnHash
+                            Genre
                         </TableHead>
                         <TableHead>
                             Price in USD
@@ -93,7 +99,14 @@ async function DashboardPage() {
 
                 </TableHeader>
                 <TableBody>
-
+                    {purchaseHistory.map((elem, index) => {
+                        return <TableRow key={index}>
+                            <TableCell>{elem.name}</TableCell>
+                            <TableCell>{elem.creator.name}</TableCell>
+                            <TableCell>{elem.genre}</TableCell>
+                            <TableCell>{elem.price}</TableCell>
+                        </TableRow>
+                    })}
                 </TableBody>
             </Table>
 
