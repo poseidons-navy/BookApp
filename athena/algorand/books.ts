@@ -1,14 +1,14 @@
-import algosdk from "algosdk";
-import {
-    bookAppNote,
-    minRound,
+// import algosdk from "algosdk";
+// import {
+//     bookAppNote,
+//     minRound,
     
     
-    numGlobalBytes,
-    numGlobalInts,
-    numLocalBytes,
-    numLocalInts
-} from "./constants";
+//     numGlobalBytes,
+//     numGlobalInts,
+//     numLocalBytes,
+//     numLocalInts
+// } from "./constants";
 /* eslint import/no-webpack-loader-syntax: off */
 // import approvalProgram from "!!raw-loader!../contracts/bookshop_approval.teal";
 // import clearProgram from "!!raw-loader!../contracts/bookshop_clear.teal";
