@@ -4,10 +4,9 @@ import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { getServerAuthSession } from '@/server/auth'
-import { getFavouritePublications, getPurchasedBooks } from '@/server/publication'
-import { Purchase, User } from '@prisma/client'
+import { getPurchasedBooks } from '@/server/publication'
 import { isNull } from 'lodash'
-import { Heart, HistoryIcon, Wallet } from 'lucide-react'
+import { HistoryIcon} from 'lucide-react'
 import React from 'react'
 // import { fetchBalance } from '@/server/publication'
 
@@ -16,7 +15,7 @@ async function DashboardPage() {
     const user = session?.user
     // let publications: Array<Publication & { creator: User | null } | null> = []
     // let purchaseHistory: Array<Purchase & {creator: User | null} | null> = []
-    let purchaseHistory = [];
+    let purchaseHistory: Array<any> = [];
     let balance = 0;
     if(isNull(user?.walletAddress)) {
         return <Redirect 

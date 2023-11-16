@@ -241,64 +241,64 @@ export class Book {
 //     }
 // }
 
-const getApplication = async (appId: number) => {
-    try {
-        console.log(6);
-        // 1. Get application by appId
-        let response = await indexerClient.lookupApplications(appId).includeAll(true).do();
-        if (response.application.deleted) {
-            return null;
-        }
-        let globalState = response.application.params["global-state"]
+// const getApplication = async (appId: number) => {
+//     try {
+//         console.log(6);
+//         // 1. Get application by appId
+//         let response = await indexerClient.lookupApplications(appId).includeAll(true).do();
+//         if (response.application.deleted) {
+//             return null;
+//         }
+//         let globalState = response.application.params["global-state"]
 
-        // 2. Parse fields of response and return product
-        let owner = response.application.params.creator
-        let name = ""
-        let image = ""
-        let book_id = ""
-        let price = 0
-        let sold = 0
-        let isSold = false;
+//         // 2. Parse fields of response and return product
+//         let owner = response.application.params.creator
+//         let name = ""
+//         let image = ""
+//         let book_id = ""
+//         let price = 0
+//         let sold = 0
+//         let isSold = false;
 
-        console.log(7);
-        const getField = (fieldName: string, globalState) => {
-            return globalState.find(state => {
-                return state.key === utf8ToBase64String(fieldName);
-            })
-        }
+//         console.log(7);
+//         const getField = (fieldName: string, globalState) => {
+//             return globalState.find(state => {
+//                 return state.key === utf8ToBase64String(fieldName);
+//             })
+//         }
 
-        if (getField("NAME", globalState) !== undefined) {
-            console.log(8);
-            let field = getField("NAME", globalState).value.bytes
-            name = base64ToUTF8String(field)
-        }
+//         if (getField("NAME", globalState) !== undefined) {
+//             console.log(8);
+//             let field = getField("NAME", globalState).value.bytes
+//             name = base64ToUTF8String(field)
+//         }
 
-        if (getField("IMAGE", globalState) !== undefined) {
-            console.log(9);
-            let field = getField("IMAGE", globalState).value.bytes
-            image = base64ToUTF8String(field)
-        }
+//         if (getField("IMAGE", globalState) !== undefined) {
+//             console.log(9);
+//             let field = getField("IMAGE", globalState).value.bytes
+//             image = base64ToUTF8String(field)
+//         }
 
-        if (getField("BOOK_ID", globalState) !== undefined) {
-            console.log(10);
-            let field = getField("BOOK_ID", globalState).value.bytes
-            book_id = base64ToUTF8String(field)
-        }
+//         if (getField("BOOK_ID", globalState) !== undefined) {
+//             console.log(10);
+//             let field = getField("BOOK_ID", globalState).value.bytes
+//             book_id = base64ToUTF8String(field)
+//         }
 
-        if (getField("PRICE", globalState) !== undefined) {
-            console.log(11);
-            price = getField("PRICE", globalState).value.uint
-        }
+//         if (getField("PRICE", globalState) !== undefined) {
+//             console.log(11);
+//             price = getField("PRICE", globalState).value.uint
+//         }
 
-        if (getField("SOLD", globalState) !== undefined) {
-            console.log(12);
-            sold = getField("SOLD", globalState).value.uint
-            isSold = sold != 0
-        }
+//         if (getField("SOLD", globalState) !== undefined) {
+//             console.log(12);
+//             sold = getField("SOLD", globalState).value.uint
+//             isSold = sold != 0
+//         }
 
-        console.log(13);
-        return new Book(name, image, price, isSold, appId, owner, book_id)
-    } catch (err) {
-        return null;
-    }
-}
+//         console.log(13);
+//         return new Book(name, image, price, isSold, appId, owner, book_id)
+//     } catch (err) {
+//         return null;
+//     }
+// }

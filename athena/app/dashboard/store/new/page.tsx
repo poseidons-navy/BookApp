@@ -38,7 +38,10 @@ const compileProgram = async (programSource: any) => {
     let compileResponse = await algodClient.compile(programBytes).do();
     return new Uint8Array(Buffer.from(compileResponse.result, "base64"));
 }
+
+//@ts-ignore
 import approvalProgram from "!!raw-loader!contracts/bookshop_approval.teal";
+//@ts-ignore
 import clearProgram from "!!raw-loader!contracts/bookshop_clear.teal";
 
 // CREATE PRODUCT: ApplicationCreateTxn
@@ -116,7 +119,7 @@ function CreateStore() {
     const [loading, setLoading] = useState(false)
     const { toast } = useToast()
     const session = useSession();
-    const { decryptKey, privateKey } = usePrivateKey();
+    const { privateKey } = usePrivateKey();
     const [showDialog, setShowDialog] = useState(privateKey == null)
     const form = useForm<Schema>({
         resolver: zodResolver(formSchema)
