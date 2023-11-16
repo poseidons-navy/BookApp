@@ -6,11 +6,11 @@ import z from "zod"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+// import Link from 'next/link'
 import { createAccount } from '@/server/wallet'
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
-import { Wallet } from 'lucide-react'
+// import { Wallet } from 'lucide-react'
 
 
 const formSchema = z.object({
@@ -37,12 +37,11 @@ function SettupWallet() {
 
     const {toast} = useToast()
 
-    async function onSubmit() {
+    async function onSubmit(values: z.infer<typeof formSchema>) {
 
 
         try {
-            console.log(1);
-            const user = await createAccount()
+            const user = await createAccount(values.password)
             console.log("User::", user)
 
             push("/dashboard")
