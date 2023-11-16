@@ -9,7 +9,7 @@ import { Purchase, User } from '@prisma/client'
 import { isNull } from 'lodash'
 import { Heart, HistoryIcon, Wallet } from 'lucide-react'
 import React from 'react'
-import { fetchBalance } from '@/server/publication'
+// import { fetchBalance } from '@/server/publication'
 
 async function DashboardPage() {
     const session = await getServerAuthSession()
@@ -27,8 +27,8 @@ async function DashboardPage() {
     try {
         // publications = await getFavouritePublications()
         purchaseHistory = await getPurchasedBooks(undefined, "published");
-        balance = await fetchBalance();
-        balance = balance / 1_000_000
+        // balance = await fetchBalance();
+        // balance = balance / 1_000_000
     }
     catch(e)
     {
@@ -46,7 +46,7 @@ async function DashboardPage() {
                 </h2>
                 <div className="grid grid-cols-4 w-full gap-y-4">
                     <div className="col-span-4 flex flex-row items-center justify-between">
-                        <div className="flex flex-row items-center gap-x-5">
+                        {/* <div className="flex flex-row items-center gap-x-5">
                             <Wallet/>
                             <span className="font-semibold text-lg">
                                 Current Balance
@@ -54,7 +54,7 @@ async function DashboardPage() {
                         </div>
                         <span>
                             {balance} Algo | {(balance * 0.14).toFixed(2)} USD
-                        </span>
+                        </span> */}
                     </div>
                     <CopyText
                         className='col-span-4'
