@@ -64,7 +64,7 @@ function StorePage() {
 
   useEffect(()=>{
     (async ()=>{
-      await loadStoreData()
+      loadStoreData()
     })()
   }, [])
 

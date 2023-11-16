@@ -1,6 +1,4 @@
 "use client"
-
-import { buyProductAction, Book, payForBook } from '@/algorand/books'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { getPublicationSaveEvent, removePublicationSaveEvent, savePublication, getPublication, purchaseBook} from '@/server/publication'
@@ -16,16 +14,59 @@ import DecryptPrivateKey from '../decrypt-private-key'
 import { DOLLAR_PER_ALGO } from '@/algorand/constants'
 import Library from '@/app/dashboard/library/page'
 
+// Importing algorand stuff
+import algosdk from 'algosdk'
 
-function Interactions(props: { publication: Partial<Publication & { creator: User | null }> | null, className?: string, showRead: boolean, appId?: number }) {
-    const { publication, className, showRead, appId } = props
+import { 
+    algorandConfig, 
+ } from '@/algorand/constants'
+
+const algodClient = new algosdk.Algodv2(algorandConfig.algodToken, algorandConfig.algodServer, algorandConfig.algodPort)
+
+
+function Interactions(props: { publication: Partial<Publication & { creator: User | null }> | null, className?: string, showRead: boolean }) {
+    const { publication, className, showRead} = props
     const [saveEvent, setSaveEvent] = useState<UserEvent | null>(null)
     const [loading, setLoading] = useState(false)
     const [eventLoading, setEventLoading] = useState(false)
     const { toast } = useToast()
     const session = useSession();
-    const {decryptKey, privateKey} = usePrivateKey();
+    const {privateKey} = usePrivateKey();
 
+    async function payForBook(senderAddress: string, ownerAddress: string, price: number, senderPrivateKey?: Uint8Array) {
+        try {
+    
+            if (senderPrivateKey == null) {
+                throw Error("Deencrypt Password")
+            }
+    
+            const acctInfo = await algodClient.accountInformation(senderAddress).do();
+            console.log(`Account balance: ${acctInfo.amount} microAlgos`);
+    
+            if (acctInfo.amount < price * 1_000_000) {
+                throw Error("Insufficient Funds");
+            }
+    
+            const suggestedParams = await algodClient.getTransactionParams().do();
+            const ptxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+                from: senderAddress,
+                suggestedParams,
+                to: ownerAddress,
+                amount: price * 1_000_000,
+                note: new Uint8Array(Buffer.from('hello world')),
+            });
+    
+            const signedTxn = ptxn.signTxn(senderPrivateKey);
+    
+            const { txId } = await algodClient.sendRawTransaction(signedTxn).do();
+            const result = await algosdk.waitForConfirmation(algodClient, txId, 4);
+            console.log(result);
+            console.log(`Transaction Information: ${result.txn}`);
+            console.log(`Decoded Note: ${Buffer.from(result.txn.txn.note).toString()}`);
+        } catch (err) {
+            throw "Could Not Pay For Book"
+        }
+    }
 
     const handleLike = async () => {
         console.log("Publication::", publication)
@@ -148,14 +189,13 @@ function Interactions(props: { publication: Partial<Publication & { creator: Use
                 title: "🎉 Success",
                 description: "Successfully bought book",
             })
-            window.location.href = `/dashboard/library`
-
+            window.location.href = '/dashboard/library'
            } catch(err) {
             console.log(err);
             toast({
                 variant: "destructive",
                 title: "!Oops",
-                description: "Decrypt key first or check Algo balance"
+                description: "Decrypt key first or check algo balance"
             })
            }
         }

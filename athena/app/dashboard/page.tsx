@@ -4,19 +4,18 @@ import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { getServerAuthSession } from '@/server/auth'
-import { getFavouritePublications, getPurchasedBooks } from '@/server/publication'
-import { Purchase, User } from '@prisma/client'
+import { getPurchasedBooks } from '@/server/publication'
 import { isNull } from 'lodash'
-import { HistoryIcon, Wallet, Heart } from 'lucide-react'
+import { HistoryIcon} from 'lucide-react'
 import React from 'react'
-import { fetchBalance } from '@/server/publication'
+// import { fetchBalance } from '@/server/publication'
 
 async function DashboardPage() {
     const session = await getServerAuthSession()
     const user = session?.user
     // let publications: Array<Publication & { creator: User | null } | null> = []
     // let purchaseHistory: Array<Purchase & {creator: User | null} | null> = []
-    let purchaseHistory = [];
+    let purchaseHistory: Array<any> = [];
     let balance = 0;
     if(isNull(user?.walletAddress)) {
         return <Redirect 
@@ -27,8 +26,8 @@ async function DashboardPage() {
     try {
         // publications = await getFavouritePublications()
         purchaseHistory = await getPurchasedBooks(undefined, "published");
-        balance = await fetchBalance();
-        balance = balance / 1_000_000
+        // balance = await fetchBalance();
+        // balance = balance / 1_000_000
     }
     catch(e)
     {
@@ -45,8 +44,8 @@ async function DashboardPage() {
                     Your Wallet
                 </h2>
                 <div className="grid grid-cols-4 w-full gap-y-4">
-                    <div className="col-span-2 flex flex-row items-center justify-between">
-                        <div className="flex flex-row items-center gap-x-5">
+                    <div className="col-span-4 flex flex-row items-center justify-between">
+                        {/* <div className="flex flex-row items-center gap-x-5">
                             <Wallet/>
                             <span className="font-semibold text-lg">
                                 Current Balance
@@ -54,7 +53,7 @@ async function DashboardPage() {
                         </div>
                         <span>
                             {balance} Algo | {(balance * 0.14).toFixed(2)} USD
-                        </span>
+                        </span> */}
                     </div>
                     <CopyText
                         className='col-span-4'

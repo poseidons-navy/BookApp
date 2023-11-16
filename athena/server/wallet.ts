@@ -1,18 +1,14 @@
 "use server"
 import { prisma } from "@/lib/prisma"
-import { encryptPrivateKey } from "@/lib/utils"
 import algosdk from "algosdk"
-import { myAlgoConnect } from "@/algorand/constants"
+import { encryptPrivateKey } from "@/lib/utils"
 import { getServerAuthSession } from "./auth"
 
-export const createAccount = async () => {
-    console.log(3)
+export const createAccount = async (encryptionPassword: string) => {
     const session = await getServerAuthSession()
-    console.log(4)
-    // const account = algosdk.generateAccount()   
-    const accounts = await myAlgoConnect.connect();
-    console.log(5)
-    const address = accounts[0].address;
+    const account = algosdk.generateAccount()   
+
+    const encryptedPrivateKey = encryptPrivateKey(encryptionPassword, account.sk)
 
 
     const user = await prisma.user.update({
@@ -20,12 +16,11 @@ export const createAccount = async () => {
             id: session?.user.id
         },
         data: {
-            walletAddress: address,
-            // encryptedPrivateKey,
-            publicKey: address
+            walletAddress: account.addr,
+            encryptedPrivateKey,
+            publicKey: account.addr
         }
     })
-    console.log(6)
 
     return user
 

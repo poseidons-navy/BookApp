@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import React from 'react'
 import { Button } from '../ui/button'
-import { BookOpenText, FileEdit, Heart, MessageCircle } from 'lucide-react'
+import { FileEdit, MessageCircle } from 'lucide-react'
 import { Publication, User } from '@prisma/client'
 import Interactions from './interactions'
 import Link from 'next/link'
@@ -11,11 +11,12 @@ import { useSession } from 'next-auth/react'
 
 interface Props {
     publication: Publication & { creator: User | null }
+    showRead: boolean
 }
 
 function BookDetails( props: Props) {
     const p = props
-    const { publication: { cover, name, description, price, creator, id, creator_id }, showRead, appId } = p
+    const { publication: { cover, name, description, price, creator, id, creator_id }, showRead } = p
     const { data } = useSession()
 
   return (
@@ -58,7 +59,6 @@ function BookDetails( props: Props) {
             <Interactions
                 publication={p.publication}
                 showRead={showRead}
-                appId={appId}
             />
             
             <Link href={`/dashboard/publications/${id}/comments`} legacyBehavior >
