@@ -1,5 +1,6 @@
 import CopyText from '@/components/copy-text'
 import DecryptPrivateKey from '@/components/decrypt-private-key'
+import FetchBalance from '@/components/fetch_balance/fetch'
 import Redirect from '@/components/redirect'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -45,15 +46,7 @@ async function DashboardPage() {
                 </h2>
                 <div className="grid grid-cols-4 w-full gap-y-4">
                     <div className="col-span-4 flex flex-row items-center justify-between">
-                        {/* <div className="flex flex-row items-center gap-x-5">
-                            <Wallet/>
-                            <span className="font-semibold text-lg">
-                                Current Balance
-                            </span>
-                        </div>
-                        <span>
-                            {balance} Algo | {(balance * 0.14).toFixed(2)} USD
-                        </span> */}
+                        <FetchBalance walletAddress={user.walletAddress}/>
                     </div>
                     <CopyText
                         className='col-span-4'
