@@ -24,8 +24,8 @@ import {
 const algodClient = new algosdk.Algodv2(algorandConfig.algodToken, algorandConfig.algodServer, algorandConfig.algodPort)
 
 
-function Interactions(props: { publication: Partial<Publication & { creator: User | null }> | null, className?: string, showRead: boolean, appId?: number }) {
-    const { publication, className, showRead, appId } = props
+function Interactions(props: { publication: Partial<Publication & { creator: User | null }> | null, className?: string, showRead: boolean }) {
+    const { publication, className, showRead} = props
     const [saveEvent, setSaveEvent] = useState<UserEvent | null>(null)
     const [loading, setLoading] = useState(false)
     const [eventLoading, setEventLoading] = useState(false)

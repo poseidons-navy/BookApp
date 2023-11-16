@@ -6,9 +6,7 @@ import { getMarketPublications } from '@/server/publication'
 import { Publication, User } from '@prisma/client'
 import { Search } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import { getBooksAction, Book } from '@/algorand/books'
 import DecryptPrivateKey from '@/components/decrypt-private-key'
-import Library from '../library/page'
 
 function MarketPage() {
     const [search, setSearch] = useState<string>()
