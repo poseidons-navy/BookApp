@@ -13,10 +13,90 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSession } from 'next-auth/react'
 import { z } from 'zod'
-import { createProductAction, Book } from '@/algorand/books'
 import { getServerAuthSession } from '@/server/auth'
 import { usePrivateKey } from '@/context/private-key-context'
 import DecryptPrivateKey from '@/components/decrypt-private-key'
+import { Book } from '@/algorand/books'
+
+// Algorand stuff
+import algosdk from 'algosdk'
+import { 
+    algorandConfig, 
+    bookAppNote,
+    numLocalBytes,
+    numGlobalBytes,
+    numGlobalInts,
+    numLocalInts,
+ } from '@/algorand/constants'
+
+const algodClient = new algosdk.Algodv2(algorandConfig.algodToken, algorandConfig.algodServer, algorandConfig.algodPort)
+
+// Compile smart contract in .teal format to program
+const compileProgram = async (programSource: any) => {
+    let encoder = new TextEncoder();
+    let programBytes = encoder.encode(programSource);
+    let compileResponse = await algodClient.compile(programBytes).do();
+    return new Uint8Array(Buffer.from(compileResponse.result, "base64"));
+}
+import approvalProgram from "!!raw-loader!contracts/bookshop_approval.teal";
+import clearProgram from "!!raw-loader!contracts/bookshop_clear.teal";
+
+// CREATE PRODUCT: ApplicationCreateTxn
+const createProductAction = async (senderAddress: string, book: Book, privateKey: Uint8Array) => {
+    console.log("Adding book...")
+    let params = await algodClient.getTransactionParams().do();
+    params.fee = algosdk.ALGORAND_MIN_TX_FEE;
+    params.flatFee = true;
+
+    // Compile programs
+    const compiledApprovalProgram = await compileProgram(approvalProgram)
+    const compiledClearProgram = await compileProgram(clearProgram)
+
+    // Build note to identify transaction later and required app args as Uint8Arrays
+    let note = new TextEncoder().encode(bookAppNote);
+    let name = new TextEncoder().encode(book.name);
+    let image = new TextEncoder().encode(book.image);
+    let book_id = new TextEncoder().encode(book.book_id);
+    let price = algosdk.encodeUint64(book.price);
+
+    let appArgs = [name, book_id, image, price]
+
+    // Create ApplicationCreateTxn
+    let txn = algosdk.makeApplicationCreateTxnFromObject({
+        from: senderAddress,
+        suggestedParams: params,
+        onComplete: algosdk.OnApplicationComplete.NoOpOC,
+        approvalProgram: compiledApprovalProgram,
+        clearProgram: compiledClearProgram,
+        numLocalInts: numLocalInts,
+        numLocalByteSlices: numLocalBytes,
+        numGlobalInts: numGlobalInts,
+        numGlobalByteSlices: numGlobalBytes,
+        note: note,
+        appArgs: appArgs
+    });
+
+    // Get transaction ID
+    let txId = txn.txID().toString();
+
+    // Sign & submit the transaction
+    // let signedTxn = await myAlgoConnect.signTransaction(txn.toByte());
+    const signedTxn = txn.signTxn(privateKey);
+    console.log("Signed transaction with txID: %s", txId);
+    await algodClient.sendRawTransaction(signedTxn).do();
+
+    // Wait for transaction to be confirmed
+    let confirmedTxn = await algosdk.waitForConfirmation(algodClient, txId, 4);
+
+    // Get the completed Transaction
+    console.log("Transaction " + txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
+
+    // Get created application id and notify about completion
+    let transactionResponse = await algodClient.pendingTransactionInformation(txId).do();
+    let appId = transactionResponse['application-index'];
+    console.log("Created new app-id: ", appId);
+    return appId;
+}
 
 const formSchema = z.object({
     name: z.string(),
