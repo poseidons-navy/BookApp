@@ -1,4 +1,3 @@
-import algosdk from "algosdk";
 export const algorandConfig = {
     algodToken: "",
     algodServer: "https://testnet-api.algonode.network",
