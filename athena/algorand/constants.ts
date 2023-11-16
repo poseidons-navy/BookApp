@@ -1,7 +1,5 @@
 import algosdk from "algosdk";
-import MyAlgoConnect from "@randlabs/myalgo-connect";
-
-const config = {
+export const algorandConfig = {
     algodToken: "",
     algodServer: "https://testnet-api.algonode.network",
     algodPort: "",
@@ -10,13 +8,10 @@ const config = {
     indexerPort: "",
 }
 
-export const algodClient = new algosdk.Algodv2(config.algodToken, config.algodServer, config.algodPort)
 
-export const indexerClient = new algosdk.Indexer(config.indexerToken, config.indexerServer, config.indexerPort);
+// export const algodClient = new algosdk.Algodv2(config.algodToken, config.algodServer, config.algodPort)
 
-export const myAlgoConnect = new MyAlgoConnect({
-    timeout: 100000000,
-});
+// export const indexerClient = new algosdk.Indexer(config.indexerToken, config.indexerServer, config.indexerPort);
 
 export const minRound = 29556983;
 
