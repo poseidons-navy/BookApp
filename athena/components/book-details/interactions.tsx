@@ -129,7 +129,7 @@ function Interactions(props: { publication: Partial<Publication & { creator: Use
         }
     }
 
-    function buyBook() {
+    async function buyBook() {
 
         if (session == null) {
             toast({
@@ -179,7 +179,7 @@ function Interactions(props: { publication: Partial<Publication & { creator: Use
             if (privateKey == null) throw Error("De encrypt key")
 
             // buyProductAction(senderAddress, book, privateKey);
-            payForBook(senderAddress, owner_address ?? "", price, privateKey)
+            await payForBook(senderAddress, owner_address ?? "", price, privateKey)
             // if (publication?.id) {
             //     (publication.id);
             //   }
